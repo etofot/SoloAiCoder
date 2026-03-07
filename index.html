@@ -329,8 +329,27 @@
             border-bottom: 1px solid var(--glass-border);
         }
 
+        .project-card.placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 250px;
+            background: rgba(255, 255, 255, 0.01);
+            border-style: dashed;
+            opacity: 0.6;
+        }
+
+        .project-placeholder-icon {
+            font-size: 2.5rem;
+            color: var(--accent-secondary);
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
         .project-info {
             padding: 16px;
+            width: 100%;
         }
 
         .project-info h3 {
@@ -493,10 +512,24 @@
                             </div>
                         </div>
                         <div class="project-card">
-                            <img src="assets/image_1_2.jpeg" alt="Multiagent System" class="project-img">
+                            <img src="assets/image_1_2.jpeg" alt="MIDI Generator" class="project-img">
                             <div class="project-info">
-                                <h3>Multiagent System</h3>
-                                <p>Оркестрация множества ИИ-агентов.</p>
+                                <h3>MIDI Generator</h3>
+                                <p>Генератор музыкальных MIDI паттернов со сложной логикой и вычислениями.</p>
+                            </div>
+                        </div>
+                        <div class="project-card placeholder">
+                            <div class="project-placeholder-icon"><i data-lucide="plus-circle"></i></div>
+                            <div class="project-info">
+                                <h3>Coming Soon</h3>
+                                <p>Загрузка нового проекта...</p>
+                            </div>
+                        </div>
+                        <div class="project-card placeholder">
+                            <div class="project-placeholder-icon"><i data-lucide="plus-circle"></i></div>
+                            <div class="project-info">
+                                <h3>Coming Soon</h3>
+                                <p>Загрузка нового проекта...</p>
                             </div>
                         </div>
                     </div>
