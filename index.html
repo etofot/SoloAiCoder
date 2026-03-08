@@ -395,8 +395,17 @@
         /* Skill Connections System */
         .skills-container {
             position: relative;
-            padding: 20px 40px;
-            margin: -20px -40px;
+            padding: 20px 60px;
+            margin: -20px -60px;
+            overflow: visible;
+        }
+
+        .skills-card {
+            border: none !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
         }
 
         #skills-canvas {
@@ -492,7 +501,7 @@
                     </div>
                 </header>
 
-                <div class="card">
+                <div class="card skills-card">
                     <h2 data-i18n="skills_title">Skills & Tech</h2>
                     <div class="skills-container">
                         <svg id="skills-canvas"></svg>
@@ -977,7 +986,7 @@
                 const ey = (endRect.top + endRect.height / 2) - containerRect.top;
 
                 const isLeft = sx < containerRect.width / 2;
-                const gx = isLeft ? 15 : containerRect.width - 15;
+                const gx = isLeft ? -10 : containerRect.width + 10;
                 const ox = isLeft ? (startRect.left - containerRect.left) : (startRect.right - containerRect.left);
                 const ix = (ex < containerRect.width / 2) ? (endRect.left - containerRect.left) : (endRect.right - containerRect.left);
 
