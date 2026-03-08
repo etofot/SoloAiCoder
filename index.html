@@ -466,16 +466,16 @@
         .connection-line {
             fill: none;
             stroke: var(--accent-primary);
-            stroke-width: 1.5;
-            stroke-dasharray: 4, 4;
+            stroke-width: 2;
+            stroke-dasharray: 6, 4;
             opacity: 0;
-            transition: opacity 0.4s ease;
-            filter: drop-shadow(0 0 5px var(--glow-color));
+            transition: opacity 0.3s ease;
+            filter: drop-shadow(0 0 8px var(--accent-primary));
         }
 
         .connection-line.active {
-            opacity: 0.6;
-            animation: marchingAnts 0.6s linear infinite;
+            opacity: 0.9;
+            animation: marchingAnts 0.4s linear infinite;
         }
 
         @media (max-width: 900px) {
@@ -987,36 +987,58 @@
             if (!activeId || !connectionsMap[activeId]) return;
 
             const targets = connectionsMap[activeId];
-            const startRect = skillTags[activeId].getBoundingClientRect();
+            const startEl = skillTags[activeId];
+            const startRect = startEl.getBoundingClientRect();
             const containerRect = skillsCanvas.getBoundingClientRect();
 
-            const startX = (startRect.left + startRect.width / 2) - containerRect.left;
-            const startY = (startRect.top + startRect.height / 2) - containerRect.top;
-
+            // Cyberpunk routing logic
             targets.forEach(targetId => {
                 const targetEl = skillTags[targetId];
                 if (!targetEl) return;
 
                 const endRect = targetEl.getBoundingClientRect();
+
+                // Calculate points relative to container
+                const startX = (startRect.left + startRect.width / 2) - containerRect.left;
+                const startY = (startRect.top + startRect.height / 2) - containerRect.top;
                 const endX = (endRect.left + endRect.width / 2) - containerRect.left;
                 const endY = (endRect.top + endRect.height / 2) - containerRect.top;
 
-                const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                // Create a smooth curve instead of a straight line
-                const midX = (startX + endX) / 2;
-                const midY = (startY + endY) / 2;
-                const dx = endX - startX;
-                const dy = endY - startY;
-                const dist = Math.sqrt(dx * dx + dy * dy);
+                // Edge determination
+                const outX = startX > endX ? (startRect.left - containerRect.left) : (startRect.right - containerRect.left);
+                const inX = startX > endX ? (endRect.right - containerRect.left) : (endRect.left - containerRect.left);
 
-                // Bend the path slightly
-                const qx = midX + (dy * 0.2);
-                const qy = midY - (dx * 0.2);
+                // Create jagged circuit path
+                const midX = (outX + inX) / 2;
+                const offset = (startY === endY) ? 0 : (startY < endY ? 15 : -15);
 
-                const d = `M ${startX} ${startY} Q ${qx} ${qy} ${endX} ${endY}`;
-                line.setAttribute('d', d);
-                line.setAttribute('class', 'connection-line active');
-                skillsCanvas.appendChild(line);
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+
+                // Cyberpunk "staircase" routing
+                let d = "";
+                if (Math.abs(startY - endY) < 10) {
+                    // Same row - simple bridge
+                    d = `M ${outX} ${startY} L ${inX} ${endY}`;
+                } else {
+                    // Different rows - circuit style
+                    const step1 = outX + (startX > endX ? -15 : 15);
+                    const step2 = inX + (startX > endX ? 15 : -15);
+                    d = `M ${outX} ${startY} L ${step1} ${startY} L ${step1} ${endY} L ${inX} ${endY}`;
+                }
+
+                path.setAttribute('d', d);
+                path.setAttribute('class', 'connection-line active');
+
+                // Add a small circle at the end point for more cyberpunk feel
+                const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                dot.setAttribute('cx', inX);
+                dot.setAttribute('cy', endY);
+                dot.setAttribute('r', '3');
+                dot.setAttribute('fill', 'var(--accent-primary)');
+                dot.setAttribute('style', 'filter: drop-shadow(0 0 5px var(--accent-primary))');
+
+                skillsCanvas.appendChild(path);
+                skillsCanvas.appendChild(dot);
             });
         }
 
