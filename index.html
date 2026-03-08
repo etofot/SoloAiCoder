@@ -37,20 +37,6 @@
             }
         }
 
-        @keyframes meshMove {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -329,24 +315,6 @@
             border-bottom: 1px solid var(--glass-border);
         }
 
-        .project-card.placeholder {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 250px;
-            background: rgba(255, 255, 255, 0.01);
-            border-style: dashed;
-            opacity: 0.6;
-        }
-
-        .project-placeholder-icon {
-            font-size: 2.5rem;
-            color: var(--accent-secondary);
-            margin-bottom: 15px;
-            opacity: 0.5;
-        }
-
         .project-info {
             padding: 16px;
             width: 100%;
@@ -480,7 +448,7 @@
         }
 
         .photon-head {
-            filter: drop-shadow(0 0 10px var(--accent-primary));
+            filter: drop-shadow(0 0 10px #fff);
         }
 
         @media (max-width: 900px) {
@@ -545,7 +513,7 @@
                 </div>
             </aside>
 
-            <!-- MAIN CONTENT: Story, Work, Projects -->
+            <!-- MAIN CONTENT -->
             <main class="main-content">
                 <div class="stats-row">
                     <div class="card stat-card">
@@ -575,11 +543,10 @@
                     </p>
                     <p class="about-text" style="margin-top: 15px;">
                         <span data-i18n="about_3">Я создаю системы с нуля: от</span> <strong>Lazy IDE Coder</strong>
-                        <span data-i18n="about_4">(кастомная IDE, связывающая LLM с
-                            визуальными нодами) и специализированных</span> <strong>RAG-пайплайнов</strong> <span
-                            data-i18n="about_5">(бот-психотерапевт,
-                            векторизованный по 30+ книгам) до</span> <strong>PayNode Router</strong> <span
-                            data-i18n="about_6">(агрегация live-метрик из 50+
+                        <span data-i18n="about_4">(кастомная IDE, связывающая LLM с визуальными нодами) и
+                            специализированных</span> <strong>RAG-пайплайнов</strong> <span
+                            data-i18n="about_5">(бот-психотерапевт, векторизованный по 30+ книгам) до</span>
+                        <strong>PayNode Router</strong> <span data-i18n="about_6">(агрегация live-метрик из 50+
                             глобальных систем).</span>
                     </p>
                     <p class="about-text" style="margin-top: 15px;" data-i18n="about_7">
@@ -898,7 +865,7 @@
                 about_6: "（聚合来自 50 多个全球系统的实时指标）。",
                 about_7: "我不断学习；人工智能令我着迷并激励着我。与许多人不同，我注意到人工智能模型往往会“偷懒”并绕过任务，直到你完全控制过程并验证它们的工作。",
                 about_8: "我的心理学背景使我能够开发出真正易于理解的用户场景，即使在“引擎盖下”运行着极其复杂的逻辑系统。我的项目从来不是静态的：它们是交互式的，可以生成节点或对声音频率做出反应。",
-                about_9: "在社交网络或金融系统等项目中，蕴含着许多独特的想法，我准备与最好的团队分享，但不在简历中展示。",
+                about_9: "在社交网络 or 金融系统等项目中，蕴含着许多独特的想法，我准备与最好的团队分享，但不在简历中展示。",
                 exp_title: "工作经验",
                 exp_role_1: "独立开发者 | 人工智能系统架构师",
                 exp_date_1: "2026年1月 — 至今",
@@ -940,35 +907,28 @@
         };
 
         function switchLanguage(lang) {
-            // Update active button
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             document.getElementById(`btn-${lang}`).classList.add('active');
 
-            // Find all elements with data-i18n attribute
             const elements = document.querySelectorAll('[data-i18n]');
             elements.forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if (translations[lang][key]) {
+                if (translations[lang] && translations[lang][key]) {
                     el.innerText = translations[lang][key];
                 }
             });
 
-            // Update HTML lang attribute
             document.documentElement.lang = (lang === 'zh') ? 'zh-CN' : lang;
-
-            // Save preference
             localStorage.setItem('preferredLang', lang);
         }
 
-        // Initialize from localStorage or default
         window.addEventListener('load', () => {
             const savedLang = localStorage.getItem('preferredLang') || 'ru';
             switchLanguage(savedLang);
         });
 
-        // Skill Connections Logic
         const skillsCanvas = document.getElementById('skills-canvas');
         const skillTags = {
             'orch': document.getElementById('skill-orch'),
@@ -987,119 +947,92 @@
             'auto': ['orch', 'llm', 'nodes', 'unreal', 'fintech']
         };
 
+        let currentActiveId = null;
+        let cleanupTimeout = null;
+
         function drawConnections(activeId) {
+            if (currentActiveId === activeId) return;
+            currentActiveId = activeId;
+
+            if (cleanupTimeout) {
+                clearTimeout(cleanupTimeout);
+                cleanupTimeout = null;
+            }
+
             skillsCanvas.innerHTML = '';
             if (!activeId || !connectionsMap[activeId]) return;
 
             const targets = connectionsMap[activeId];
-            const startEl = skillTags[activeId];
-            const startRect = startEl.getBoundingClientRect();
+            const startRect = skillTags[activeId].getBoundingClientRect();
             const containerRect = skillsCanvas.getBoundingClientRect();
 
             targets.forEach(targetId => {
                 const targetEl = skillTags[targetId];
                 if (!targetEl) return;
-
                 const endRect = targetEl.getBoundingClientRect();
 
-                const sX = (startRect.left + startRect.width / 2) - containerRect.left;
-                const sY = (startRect.top + startRect.height / 2) - containerRect.top;
-                const eX = (endRect.left + endRect.width / 2) - containerRect.left;
-                const eY = (endRect.top + endRect.height / 2) - containerRect.top;
+                const sx = (startRect.left + startRect.width / 2) - containerRect.left;
+                const sy = (startRect.top + startRect.height / 2) - containerRect.top;
+                const ex = (endRect.left + endRect.width / 2) - containerRect.left;
+                const ey = (endRect.top + endRect.height / 2) - containerRect.top;
 
-                // Determine routing side (Left or Right gutter)
-                const isStartOnLeft = sX < containerRect.width / 2;
-                const gutterX = isStartOnLeft ? 20 : containerRect.width - 20;
-
-                const outX = isStartOnLeft ? (startRect.left - containerRect.left) : (startRect.right - containerRect.left);
-                const inX = (eX < containerRect.width / 2) ? (endRect.left - containerRect.left) : (endRect.right - containerRect.left);
+                const isLeft = sx < containerRect.width / 2;
+                const gx = isLeft ? 15 : containerRect.width - 15;
+                const ox = isLeft ? (startRect.left - containerRect.left) : (startRect.right - containerRect.left);
+                const ix = (ex < containerRect.width / 2) ? (endRect.left - containerRect.left) : (endRect.right - containerRect.left);
 
                 const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                let d = `M ${outX} ${sY} L ${gutterX} ${sY} L ${gutterX} ${eY} L ${inX} ${eY}`;
-
-                // If same Row and close, just straight line
-                if (Math.abs(sY - eY) < 10 && Math.abs(outX - inX) < 150) {
-                    d = `M ${outX} ${sY} L ${inX} ${eY}`;
-                }
+                let d = `M ${ox} ${sy} L ${gx} ${sy} L ${gx} ${ey} L ${ix} ${ey}`;
+                if (Math.abs(sy - ey) < 10 && Math.abs(ox - ix) < 150) d = `M ${ox} ${sy} L ${ix} ${ey}`;
 
                 path.setAttribute('d', d);
                 path.setAttribute('class', 'connection-line');
                 skillsCanvas.appendChild(path);
 
-                // Photon Head
                 const photon = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                 photon.setAttribute('r', '4');
                 photon.setAttribute('fill', '#fff');
                 photon.setAttribute('class', 'photon-head');
                 skillsCanvas.appendChild(photon);
 
-                const length = path.getTotalLength();
-                path.style.strokeDasharray = length;
-                path.style.strokeDashoffset = length;
+                const len = path.getTotalLength();
+                path.style.strokeDasharray = len;
+                path.style.strokeDashoffset = len;
                 path.style.opacity = '1';
 
-                // Duration 1.2s to 3s based on length
-                const duration = Math.max(1200, Math.min(3000, length * 6));
+                const dur = Math.max(1200, Math.min(3000, len * 8));
 
-                // Path drawing animation
-                path.animate([
-                    { strokeDashoffset: length },
-                    { strokeDashoffset: 0 }
-                ], {
-                    duration: duration,
-                    easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                path.animate([{ strokeDashoffset: len }, { strokeDashoffset: 0 }], {
+                    duration: dur,
+                    easing: 'ease-out',
                     fill: 'forwards'
                 }).onfinish = () => {
                     path.classList.add('active');
-                    path.style.strokeDasharray = '8, 8';
+                    path.style.strokeDasharray = '10, 10';
                 };
 
-                // Photon movement animation
-                photon.style.offsetPath = `path("${d}")`;
-                photon.animate([
-                    { offsetDistance: '0%' },
-                    { offsetDistance: '100%' }
-                ], {
-                    duration: duration,
-                    easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                photon.animate([{ offsetDistance: '0%' }, { offsetDistance: '100%' }], {
+                    duration: dur,
+                    easing: 'ease-out',
                     fill: 'forwards'
-                }).onfinish = () => {
-                    photon.animate([
-                        { transform: 'scale(1.5)', opacity: 1 },
-                        { transform: 'scale(1)', opacity: 0.5 }
-                    ], {
-                        duration: 800,
-                        iterations: Infinity,
-                        direction: 'alternate'
-                    });
-                };
+                });
+                photon.style.offsetPath = `path("${d}")`;
             });
         }
 
         Object.keys(skillTags).forEach(id => {
             skillTags[id].addEventListener('mouseenter', () => drawConnections(id));
             skillTags[id].addEventListener('mouseleave', () => {
-                const activeLines = skillsCanvas.querySelectorAll('.connection-line');
+                currentActiveId = null;
+                const lines = skillsCanvas.querySelectorAll('.connection-line');
                 const photons = skillsCanvas.querySelectorAll('.photon-head');
-                activeLines.forEach(l => l.style.opacity = '0');
+                lines.forEach(l => l.style.opacity = '0');
                 photons.forEach(p => p.style.opacity = '0');
-                setTimeout(() => { if (skillsCanvas.innerHTML !== '') skillsCanvas.innerHTML = ''; }, 600);
+                cleanupTimeout = setTimeout(() => { if (!currentActiveId) skillsCanvas.innerHTML = ''; }, 800);
             });
         });
 
         window.addEventListener('resize', () => { skillsCanvas.innerHTML = ''; });
-
-        // Subtle parallax effect for cards
-        document.addEventListener('mousemove', (e) => {
-            const cards = document.querySelectorAll('.card');
-            const x = e.clientX / window.innerWidth - 0.5;
-            const y = e.clientY / window.innerHeight - 0.5;
-
-            cards.forEach(card => {
-                const speed = 10;
-                card.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
-            });
-        });
     </script>
 </body>
 
