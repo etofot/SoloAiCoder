@@ -171,6 +171,26 @@
             color: var(--accent-primary);
         }
 
+        .contact-item.clickable {
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .copy-status {
+            font-size: 0.7rem;
+            color: var(--accent-primary);
+            margin-left: auto;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-weight: 800;
+        }
+
+        .copy-status.show {
+            opacity: 1;
+        }
+
         h2 {
             font-family: 'Outfit', sans-serif;
             font-size: 1.1rem;
@@ -499,10 +519,17 @@
                     <h1>YUKI&nbsp; LEE</h1>
                     <p class="subtitle" data-i18n="subtitle">Vibe Coder & AI Systems Builder</p>
                     <div class="contact-info">
-                        <div class="contact-item"><i data-lucide="mail"></i> yukiprofoto@gmail.com</div>
-                        <div class="contact-item"><i data-lucide="send"></i> @Cyberhumans</div>
-                        <div class="contact-item"><i data-lucide="map-pin" data-i18n="location"></i> Remote / China /
-                            Europe</div>
+                        <div class="contact-item clickable" id="email-contact">
+                            <i data-lucide="mail"></i>
+                            <span>yukiprofoto@gmail.com</span>
+                            <span class="copy-status" id="copy-hint">COPIED</span>
+                        </div>
+                        <a href="https://t.me/Cyberhumans" target="_blank" class="contact-item clickable">
+                            <i data-lucide="send"></i> @Cyberhumans
+                        </a>
+                        <div class="contact-item">
+                            <i data-lucide="map-pin" data-i18n="location"></i> Remote / China / Europe
+                        </div>
                     </div>
                 </header>
 
@@ -730,6 +757,16 @@
 
     <script>
         lucide.createIcons();
+
+        // Contact Actions
+        document.getElementById('email-contact').addEventListener('click', function () {
+            const email = "yukiprofoto@gmail.com";
+            navigator.clipboard.writeText(email).then(() => {
+                const hint = document.getElementById('copy-hint');
+                hint.classList.add('show');
+                setTimeout(() => hint.classList.remove('show'), 2000);
+            });
+        });
 
         const translations = {
             ru: {
