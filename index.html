@@ -508,6 +508,86 @@
             margin-bottom: 24px;
         }
 
+        /* Project Cards & Zoom */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .project-card {
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            transition: border-color 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .project-card:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.1);
+            z-index: 100;
+        }
+
+        .project-img-wrapper {
+            width: 100%;
+            height: 180px;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            position: relative;
+        }
+
+        .project-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s, border-radius 0.4s;
+            position: relative;
+            z-index: 10;
+        }
+
+        .project-card:nth-child(1) .project-img {
+            transform-origin: top left;
+        }
+
+        .project-card:nth-child(2) .project-img {
+            transform-origin: top right;
+        }
+
+        .project-card:nth-child(3) .project-img {
+            transform-origin: bottom left;
+        }
+
+        .project-card:nth-child(4) .project-img {
+            transform-origin: bottom right;
+        }
+
+        .project-card:hover .project-img {
+            transform: scale(2.8);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9), 0 0 40px var(--glow-color);
+            border-radius: 12px;
+            z-index: 1000;
+        }
+
+        .project-content {
+            padding: 16px;
+        }
+
+        .project-title {
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .project-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
         @media (max-width: 900px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
@@ -515,6 +595,18 @@
 
             #trace-overlay {
                 display: none;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .project-card:nth-child(n) .project-img {
+                transform-origin: center center;
+            }
+
+            .project-card:hover .project-img {
+                transform: scale(1.08);
             }
         }
     </style>
@@ -685,6 +777,52 @@
                         </article>
                     </div>
                 </section>
+
+                <section class="card" style="margin-top:24px;">
+                    <h2 data-i18n="projectstitle">PROJECTS</h2>
+                    <div class="projects-grid">
+                        <div class="project-card">
+                            <div class="project-img-wrapper">
+                                <img src="assets/image_1_0.jpeg" alt="Spectrum Analyser" class="project-img">
+                            </div>
+                            <div class="project-content">
+                                <div class="project-title" data-i18n="projtitle1">Spectrum Analyser</div>
+                                <div class="project-desc" data-i18n="projdesc1">Визуализация частот в реальном времени.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="project-card">
+                            <div class="project-img-wrapper">
+                                <img src="assets/image_1_1.jpeg" alt="MIDI Generator" class="project-img">
+                            </div>
+                            <div class="project-content">
+                                <div class="project-title" data-i18n="projtitle2">MIDI Generator</div>
+                                <div class="project-desc" data-i18n="projdesc2">Генератор музыкальных MIDI паттернов со
+                                    сложной логикой и вычислениями.</div>
+                            </div>
+                        </div>
+                        <div class="project-card">
+                            <div class="project-img-wrapper">
+                                <img src="assets/image_1_2.jpeg" alt="AI Agent Orchestrator" class="project-img">
+                            </div>
+                            <div class="project-content">
+                                <div class="project-title" data-i18n="projtitle3">AI Agent Orchestrator</div>
+                                <div class="project-desc" data-i18n="projdesc3">Визуальный интерфейс для управления
+                                    группой автономных ИИ-агентов в реальном времени.</div>
+                            </div>
+                        </div>
+                        <div class="project-card">
+                            <div class="project-img-wrapper">
+                                <img src="assets/image_1_3.jpeg" alt="3D Motion Tracking" class="project-img">
+                            </div>
+                            <div class="project-content">
+                                <div class="project-title" data-i18n="projtitle4">3D Motion Tracking</div>
+                                <div class="project-desc" data-i18n="projdesc4">Система захвата движений всего тела на
+                                    базе Unreal Engine для виртуальных миров.</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </main>
         </div>
     </div>
@@ -736,7 +874,12 @@
                 exprole4: 'Audio Engines / DSP Development',
                 expdesc9: 'Разработал сверхсложную MIDI-архитектуру и движок генерации полиритмов, способный обрабатывать мелодические паттерны, превосходящие возможности человека.',
                 expdesc10: 'Создал высокопроизводительные браузерные генераторы аудиосигналов и веб-анализаторы спектра: Spectrum Analyser, 3D Audio Analyser.',
-                expdesc11: 'Прошел путь от реверс-инжиниринга к реализации собственных уникальных идей.'
+                expdesc11: 'Прошел путь от реверс-инжиниринга к реализации собственных уникальных идей.',
+                projectstitle: 'ПРОЕКТЫ',
+                projtitle1: 'Spectrum Analyser', projdesc1: 'Визуализация частот в реальном времени.',
+                projtitle2: 'MIDI Generator', projdesc2: 'Генератор музыкальных MIDI паттернов со сложной логикой и вычислениями.',
+                projtitle3: 'AI Agent Orchestrator', projdesc3: 'Визуальный интерфейс для управления группой автономных ИИ-агентов в реальном времени.',
+                projtitle4: '3D Motion Tracking', projdesc4: 'Система захвата движений всего тела на базе Unreal Engine для виртуальных миров.'
             },
             en: {
                 subtitle: 'Vibe Coder / AI Systems Builder', location: 'Remote · China / Europe',
@@ -759,7 +902,12 @@
                 expdesc8: 'Setup from scratch to live real-time broadcast.',
                 expdesc9: 'Built an ultra-complex MIDI architecture and polyrhythm generation engine.',
                 expdesc10: 'Created high-performance browser-based audio analyzers.',
-                expdesc11: 'Progressed from reverse engineering to original architectural ideas.'
+                expdesc11: 'Progressed from reverse engineering to original architectural ideas.',
+                projectstitle: 'PROJECTS',
+                projtitle1: 'Spectrum Analyser', projdesc1: 'Real-time frequency visualization.',
+                projtitle2: 'MIDI Generator', projdesc2: 'MIDI pattern generator with complex logic and computations.',
+                projtitle3: 'AI Agent Orchestrator', projdesc3: 'Visual interface for managing a group of autonomous AI agents in real time.',
+                projtitle4: '3D Motion Tracking', projdesc4: 'Full-body motion capture system based on Unreal Engine for virtual worlds.'
             },
             zh: {
                 subtitle: 'Vibe Coder / AI系统架构师', location: '远程 · 中国 / 欧洲',
@@ -782,7 +930,12 @@
                 expdesc8: '从零到实时直播的完整配置。',
                 expdesc9: '构建了超复杂的MIDI架构和多节奏生成引擎。',
                 expdesc10: '创建了高性能的浏览器端音频频谱分析仪。',
-                expdesc11: '从逆向工程到实现自己独特想法。'
+                expdesc11: '从逆向工程到实现自己独特想法。',
+                projectstitle: '项目',
+                projtitle1: '频谱分析仪', projdesc1: '实时频率可视化。',
+                projtitle2: 'MIDI生成器', projdesc2: '具有复杂逻辑和计算的MIDI模式生成器。',
+                projtitle3: 'AI代理编排器', projdesc3: '用于实时管理一组自主AI代理的可视化界面。',
+                projtitle4: '3D动作捕捉', projdesc4: '基于虚幻引擎的虚拟世界全身动作捕捉系统。'
             }
         };
 
