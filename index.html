@@ -427,6 +427,8 @@
         /* Skill Connections System */
         .skills-container {
             position: relative;
+            padding: 20px 40px;
+            margin: -20px -40px;
         }
 
         #skills-canvas {
@@ -441,9 +443,9 @@
 
         .skill-tag {
             position: relative;
-            z-index: 1;
+            z-index: 10;
             padding: 8px 12px;
-            background: rgba(15, 21, 53, 0.8);
+            background: rgba(15, 21, 53, 0.9);
             border: 1px solid rgba(77, 93, 251, 0.2);
             border-radius: 12px;
             font-size: 0.8rem;
@@ -455,7 +457,7 @@
 
         @keyframes marchingAnts {
             from {
-                stroke-dashoffset: 20;
+                stroke-dashoffset: 40;
             }
 
             to {
@@ -467,15 +469,18 @@
             fill: none;
             stroke: var(--accent-primary);
             stroke-width: 2;
-            stroke-dasharray: 6, 4;
+            stroke-dasharray: 8, 8;
             opacity: 0;
-            transition: opacity 0.3s ease;
             filter: drop-shadow(0 0 8px var(--accent-primary));
         }
 
         .connection-line.active {
-            opacity: 0.9;
-            animation: marchingAnts 0.4s linear infinite;
+            opacity: 0.8;
+            animation: marchingAnts 1.2s linear infinite;
+        }
+
+        .photon-head {
+            filter: drop-shadow(0 0 10px var(--accent-primary));
         }
 
         @media (max-width: 900px) {
@@ -991,54 +996,83 @@
             const startRect = startEl.getBoundingClientRect();
             const containerRect = skillsCanvas.getBoundingClientRect();
 
-            // Cyberpunk routing logic
             targets.forEach(targetId => {
                 const targetEl = skillTags[targetId];
                 if (!targetEl) return;
 
                 const endRect = targetEl.getBoundingClientRect();
 
-                // Calculate points relative to container
-                const startX = (startRect.left + startRect.width / 2) - containerRect.left;
-                const startY = (startRect.top + startRect.height / 2) - containerRect.top;
-                const endX = (endRect.left + endRect.width / 2) - containerRect.left;
-                const endY = (endRect.top + endRect.height / 2) - containerRect.top;
+                const sX = (startRect.left + startRect.width / 2) - containerRect.left;
+                const sY = (startRect.top + startRect.height / 2) - containerRect.top;
+                const eX = (endRect.left + endRect.width / 2) - containerRect.left;
+                const eY = (endRect.top + endRect.height / 2) - containerRect.top;
 
-                // Edge determination
-                const outX = startX > endX ? (startRect.left - containerRect.left) : (startRect.right - containerRect.left);
-                const inX = startX > endX ? (endRect.right - containerRect.left) : (endRect.left - containerRect.left);
+                // Determine routing side (Left or Right gutter)
+                const isStartOnLeft = sX < containerRect.width / 2;
+                const gutterX = isStartOnLeft ? 20 : containerRect.width - 20;
 
-                // Create jagged circuit path
-                const midX = (outX + inX) / 2;
-                const offset = (startY === endY) ? 0 : (startY < endY ? 15 : -15);
+                const outX = isStartOnLeft ? (startRect.left - containerRect.left) : (startRect.right - containerRect.left);
+                const inX = (eX < containerRect.width / 2) ? (endRect.left - containerRect.left) : (endRect.right - containerRect.left);
 
                 const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                let d = `M ${outX} ${sY} L ${gutterX} ${sY} L ${gutterX} ${eY} L ${inX} ${eY}`;
 
-                // Cyberpunk "staircase" routing
-                let d = "";
-                if (Math.abs(startY - endY) < 10) {
-                    // Same row - simple bridge
-                    d = `M ${outX} ${startY} L ${inX} ${endY}`;
-                } else {
-                    // Different rows - circuit style
-                    const step1 = outX + (startX > endX ? -15 : 15);
-                    const step2 = inX + (startX > endX ? 15 : -15);
-                    d = `M ${outX} ${startY} L ${step1} ${startY} L ${step1} ${endY} L ${inX} ${endY}`;
+                // If same Row and close, just straight line
+                if (Math.abs(sY - eY) < 10 && Math.abs(outX - inX) < 150) {
+                    d = `M ${outX} ${sY} L ${inX} ${eY}`;
                 }
 
                 path.setAttribute('d', d);
-                path.setAttribute('class', 'connection-line active');
-
-                // Add a small circle at the end point for more cyberpunk feel
-                const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                dot.setAttribute('cx', inX);
-                dot.setAttribute('cy', endY);
-                dot.setAttribute('r', '3');
-                dot.setAttribute('fill', 'var(--accent-primary)');
-                dot.setAttribute('style', 'filter: drop-shadow(0 0 5px var(--accent-primary))');
-
+                path.setAttribute('class', 'connection-line');
                 skillsCanvas.appendChild(path);
-                skillsCanvas.appendChild(dot);
+
+                // Photon Head
+                const photon = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                photon.setAttribute('r', '4');
+                photon.setAttribute('fill', '#fff');
+                photon.setAttribute('class', 'photon-head');
+                skillsCanvas.appendChild(photon);
+
+                const length = path.getTotalLength();
+                path.style.strokeDasharray = length;
+                path.style.strokeDashoffset = length;
+                path.style.opacity = '1';
+
+                // Duration 1.2s to 3s based on length
+                const duration = Math.max(1200, Math.min(3000, length * 6));
+
+                // Path drawing animation
+                path.animate([
+                    { strokeDashoffset: length },
+                    { strokeDashoffset: 0 }
+                ], {
+                    duration: duration,
+                    easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                    fill: 'forwards'
+                }).onfinish = () => {
+                    path.classList.add('active');
+                    path.style.strokeDasharray = '8, 8';
+                };
+
+                // Photon movement animation
+                photon.style.offsetPath = `path("${d}")`;
+                photon.animate([
+                    { offsetDistance: '0%' },
+                    { offsetDistance: '100%' }
+                ], {
+                    duration: duration,
+                    easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                    fill: 'forwards'
+                }).onfinish = () => {
+                    photon.animate([
+                        { transform: 'scale(1.5)', opacity: 1 },
+                        { transform: 'scale(1)', opacity: 0.5 }
+                    ], {
+                        duration: 800,
+                        iterations: Infinity,
+                        direction: 'alternate'
+                    });
+                };
             });
         }
 
@@ -1046,8 +1080,10 @@
             skillTags[id].addEventListener('mouseenter', () => drawConnections(id));
             skillTags[id].addEventListener('mouseleave', () => {
                 const activeLines = skillsCanvas.querySelectorAll('.connection-line');
+                const photons = skillsCanvas.querySelectorAll('.photon-head');
                 activeLines.forEach(l => l.style.opacity = '0');
-                setTimeout(() => { if (skillsCanvas.innerHTML !== '') skillsCanvas.innerHTML = ''; }, 400);
+                photons.forEach(p => p.style.opacity = '0');
+                setTimeout(() => { if (skillsCanvas.innerHTML !== '') skillsCanvas.innerHTML = ''; }, 600);
             });
         });
 
