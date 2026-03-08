@@ -183,6 +183,11 @@
             gap: 10px;
         }
 
+        .skills-card h2 {
+            margin-top: -15px;
+            margin-bottom: 35px;
+        }
+
         h2::before {
             content: '';
             width: 4px;
@@ -986,13 +991,21 @@
                 const ey = (endRect.top + endRect.height / 2) - containerRect.top;
 
                 const isLeft = sx < containerRect.width / 2;
-                const gx = isLeft ? -10 : containerRect.width + 10;
                 const ox = isLeft ? (startRect.left - containerRect.left) : (startRect.right - containerRect.left);
                 const ix = (ex < containerRect.width / 2) ? (endRect.left - containerRect.left) : (endRect.right - containerRect.left);
 
-                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                let d = `M ${ox} ${sy} L ${gx} ${sy} L ${gx} ${ey} L ${ix} ${ey}`;
-                if (Math.abs(sy - ey) < 10 && Math.abs(ox - ix) < 150) d = `M ${ox} ${sy} L ${ix} ${ey}`;
+                // Smart Routing: Unique gutter per connection to avoid overlap
+                const randOffset = (Math.random() - 0.5) * 15;
+                const gx = isLeft ? (-15 + randOffset) : (containerRect.width + 15 + randOffset);
+
+                let d;
+                // If neighbors on same row, route through TOP to look like a circuit bridge
+                if (Math.abs(sy - ey) < 30) {
+                    const topGutter = Math.min(sy, ey) - 40 + randOffset;
+                    d = `M ${ox} ${sy} L ${gx} ${sy} L ${gx} ${topGutter} L ${ix} ${topGutter} L ${ix} ${ey}`;
+                } else {
+                    d = `M ${ox} ${sy} L ${gx} ${sy} L ${gx} ${ey} L ${ix} ${ey}`;
+                }
 
                 path.setAttribute('d', d);
                 path.setAttribute('class', 'connection-line');
