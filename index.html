@@ -1007,6 +1007,8 @@
                     d = `M ${ox} ${sy} L ${gx} ${sy} L ${gx} ${ey} L ${ix} ${ey}`;
                 }
 
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+
                 path.setAttribute('d', d);
                 path.setAttribute('class', 'connection-line');
                 skillsCanvas.appendChild(path);
