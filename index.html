@@ -389,6 +389,95 @@
             color: var(--text-secondary);
         }
 
+        /* Language Switcher */
+        .lang-switcher {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .lang-btn:hover {
+            background: rgba(0, 245, 255, 0.1);
+            border-color: var(--accent-primary);
+            color: #fff;
+        }
+
+        .lang-btn.active {
+            background: var(--accent-primary);
+            color: var(--bg-deep);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 15px var(--glow-color);
+        }
+
+        /* Skill Connections System */
+        .skills-container {
+            position: relative;
+        }
+
+        #skills-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .skill-tag {
+            position: relative;
+            z-index: 1;
+            padding: 8px 12px;
+            background: rgba(15, 21, 53, 0.8);
+            border: 1px solid rgba(77, 93, 251, 0.2);
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #fff;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        @keyframes marchingAnts {
+            from {
+                stroke-dashoffset: 20;
+            }
+
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .connection-line {
+            fill: none;
+            stroke: var(--accent-primary);
+            stroke-width: 1.5;
+            stroke-dasharray: 4, 4;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            filter: drop-shadow(0 0 5px var(--glow-color));
+        }
+
+        .connection-line.active {
+            opacity: 0.6;
+            animation: marchingAnts 0.6s linear infinite;
+        }
+
         @media (max-width: 900px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
@@ -411,33 +500,43 @@
         <div class="dashboard-grid">
             <!-- SIDEBAR: Personal Branding & Stats -->
             <aside class="sidebar">
+                <div class="lang-switcher card">
+                    <button class="lang-btn active" onclick="switchLanguage('ru')" id="btn-ru">RU</button>
+                    <button class="lang-btn" onclick="switchLanguage('en')" id="btn-en">EN</button>
+                    <button class="lang-btn" onclick="switchLanguage('zh')" id="btn-zh">ZH</button>
+                </div>
+
                 <header class="card">
                     <video src="assets/avatar.mp4" class="profile-pic" autoplay loop muted playsinline
                         alt="YUKI LEE"></video>
                     <h1>YUKI&nbsp; LEE</h1>
-                    <p class="subtitle">Vibe Coder & AI Systems Builder</p>
+                    <p class="subtitle" data-i18n="subtitle">Vibe Coder & AI Systems Builder</p>
                     <div class="contact-info">
                         <div class="contact-item"><i data-lucide="mail"></i> yukiprofoto@gmail.com</div>
                         <div class="contact-item"><i data-lucide="send"></i> @Cyberhumans</div>
-                        <div class="contact-item"><i data-lucide="map-pin"></i> Remote / China / Europe</div>
+                        <div class="contact-item"><i data-lucide="map-pin" data-i18n="location"></i> Remote / China /
+                            Europe</div>
                     </div>
                 </header>
 
                 <div class="card">
-                    <h2>Skills & Tech</h2>
-                    <div class="skills-grid">
-                        <span class="skill-tag">AI Orchestration</span>
-                        <span class="skill-tag">LLM / RAG</span>
-                        <span class="skill-tag">Node Systems</span>
-                        <span class="skill-tag">Unreal Engine</span>
-                        <span class="skill-tag">FinTech</span>
-                        <span class="skill-tag">Automation</span>
+                    <h2 data-i18n="skills_title">Skills & Tech</h2>
+                    <div class="skills-container">
+                        <svg id="skills-canvas"></svg>
+                        <div class="skills-grid">
+                            <span class="skill-tag" id="skill-orch" data-i18n="skill_1">AI Orchestration</span>
+                            <span class="skill-tag" id="skill-llm" data-i18n="skill_2">LLM / RAG</span>
+                            <span class="skill-tag" id="skill-nodes" data-i18n="skill_3">Node Systems</span>
+                            <span class="skill-tag" id="skill-unreal" data-i18n="skill_4">Unreal Engine</span>
+                            <span class="skill-tag" id="skill-fintech" data-i18n="skill_5">FinTech</span>
+                            <span class="skill-tag" id="skill-auto" data-i18n="skill_6">Automation</span>
+                        </div>
                     </div>
                 </div>
 
                 <div class="card stat-card">
                     <div class="stat-value">10+</div>
-                    <div class="stat-label">Продуктов запущено</div>
+                    <div class="stat-label" data-i18n="stats_products">Продуктов запущено</div>
                 </div>
             </aside>
 
@@ -446,176 +545,193 @@
                 <div class="stats-row">
                     <div class="card stat-card">
                         <div class="stat-value">50+</div>
-                        <div class="stat-label">API Integrated</div>
+                        <div class="stat-label" data-i18n="stats_api">API Integrated</div>
                     </div>
                     <div class="card stat-card">
                         <div class="stat-value">3D</div>
-                        <div class="stat-label">Spatial Engineer</div>
+                        <div class="stat-label" data-i18n="stats_spatial">Spatial Engineer</div>
                     </div>
                     <div class="card stat-card">
                         <div class="stat-value">∞</div>
-                        <div class="stat-label">Vibe Level</div>
+                        <div class="stat-label" data-i18n="stats_vibe">Vibe Level</div>
                     </div>
                 </div>
 
                 <section id="about" class="card">
-                    <h2>ОБО МНЕ</h2>
-                    <p class="about-text">
+                    <h2 data-i18n="about_title">ОБО МНЕ</h2>
+                    <p class="about-text" data-i18n="about_1">
                         Я создаю визуальные оркестраторы для мультиагентных систем, которые позволяют наблюдать за
                         созданием и поведением моделей ИИ в реальном времени.
                     </p>
-                    <p class="about-text" style="margin-top: 15px;">
+                    <p class="about-text" style="margin-top: 15px;" data-i18n="about_2">
                         За последний год я разработал более 10 сложных продуктов. Мой стек объединяет CLI, API и
                         локальные модели в автономные системы из ИИ-агентов для кодинга приложений или имитирующие
                         поведение человека с определенной базой знаний внутри.
                     </p>
                     <p class="about-text" style="margin-top: 15px;">
-                        Я создаю системы с нуля: от <strong>Lazy IDE Coder</strong> (кастомная IDE, связывающая LLM с
-                        визуальными нодами) и специализированных <strong>RAG-пайплайнов</strong> (бот-психотерапевт,
-                        векторизованный по 30+ книгам) до <strong>PayNode Router</strong> (агрегация live-метрик из 50+
-                        глобальных систем).
+                        <span data-i18n="about_3">Я создаю системы с нуля: от</span> <strong>Lazy IDE Coder</strong>
+                        <span data-i18n="about_4">(кастомная IDE, связывающая LLM с
+                            визуальными нодами) и специализированных</span> <strong>RAG-пайплайнов</strong> <span
+                            data-i18n="about_5">(бот-психотерапевт,
+                            векторизованный по 30+ книгам) до</span> <strong>PayNode Router</strong> <span
+                            data-i18n="about_6">(агрегация live-метрик из 50+
+                            глобальных систем).</span>
                     </p>
-                    <p class="about-text" style="margin-top: 15px;">
+                    <p class="about-text" style="margin-top: 15px;" data-i18n="about_7">
                         Я непрерывно учусь; ИИ восхищает и вдохновляет меня. В отличие от многих, я замечаю, что
                         ИИ-модели склонны «лениться» и обходить задачи до тех пор, пока не возьмешь процесс под полный
                         контроль и не проверишь их работу.
                     </p>
-                    <p class="about-text" style="margin-top: 15px;">
+                    <p class="about-text" style="margin-top: 15px;" data-i18n="about_8">
                         Мой бэкграунд в психологии позволяет разрабатывать пользовательские сценарии, которые
                         по-настоящему понятны людям, даже если «под капотом» работает невероятно сложная логическая
                         система. Мои проекты никогда не бывают статичными: они интерактивны, генерируют ноды или
                         реагируют на звуковые частоты.
                     </p>
-                    <p class="about-text" style="margin-top: 15px; font-weight: 600; color: var(--accent-primary);">
+                    <p class="about-text" style="margin-top: 15px; font-weight: 600; color: var(--accent-primary);"
+                        data-i18n="about_9">
                         В таких проектах, как социальные сети или финансовые системы, заложено много уникальных идей,
                         которыми я готов поделиться с лучшей командой, но не в резюме.
                     </p>
                 </section>
 
                 <section id="experience" class="card">
-                    <h2>ОПЫТ РАБОТЫ</h2>
+                    <h2 data-i18n="exp_title">ОПЫТ РАБОТЫ</h2>
                     <div class="experience-timeline">
                         <div class="exp-item">
                             <div class="exp-header">
-                                <span class="exp-title">Независимый разработчик | Архитектор ИИ-систем</span>
-                                <span class="exp-date">Январь 2026 — Наст.</span>
+                                <span class="exp-title" data-i18n="exp_role_1">Независимый разработчик | Архитектор
+                                    ИИ-систем</span>
+                                <span class="exp-date" data-i18n="exp_date_1">Январь 2026 — Наст.</span>
                             </div>
                             <span class="exp-company">Stealth & Open Source проекты</span>
                             <ul class="exp-list">
-                                <li><strong>Lazy IDE Coder:</strong> Мультиагентный оркестратор, связывающий CLI, API и
-                                    локальные модели с отдельными визуальными нодами с механикой спавна в реальном
-                                    времени для генерации кода.</li>
-                                <li><strong>Диалоговый автоответчик:</strong> Система с долгосрочной памятью о
-                                    пользователе (БД), симулирующая человеческий ввод текста в реальном времени (Стек:
-                                    Скрипты, Логика, SQLite, Firebase Hosting, VPS-сервер, Windows App).</li>
-                                <li><strong>PayNode:</strong> FinTech-калькулятор маршрутизации, агрегирующий данные о
-                                    комиссиях из 50+ глобальных систем в реальном времени (Стек: Скрипты, Таблицы,
-                                    Логика, DeepResearch, Frontend, Backend).</li>
-                                <li><strong>RAG-бот (Психотерапевт):</strong> Специализированная система,
-                                    векторизовавшая 30+ ключевых профессиональных книг для контекстно-точных рассуждений
-                                    ИИ.</li>
-                                <li><strong>Market App:</strong> Полномасштабный Android-маркетплейс с интеграцией
-                                    платежных шлюзов и сложной backend-логикой (Frontend, Backend, Дизайн, Свайп и
-                                    удобство).</li>
+                                <li><strong>Lazy IDE Coder:</strong> <span data-i18n="exp_desc_1">Мультиагентный
+                                        оркестратор, связывающий CLI, API и локальные модели с отдельными визуальными
+                                        нодами с механикой спавна в реальном времени для генерации кода.</span></li>
+                                <li><strong><span data-i18n="exp_desc_2_title">Диалоговый автоответчик</span>:</strong>
+                                    <span data-i18n="exp_desc_2">Система с долгосрочной памятью о пользователе (БД),
+                                        симулирующая человеческий ввод текста в реальном времени (Стек: Скрипты, Логика,
+                                        SQLite, Firebase Hosting, VPS-сервер, Windows App).</span>
+                                </li>
+                                <li><strong>PayNode:</strong> <span data-i18n="exp_desc_3">FinTech-калькулятор
+                                        маршрутизации, агрегирующий данные о комиссиях из 50+ глобальных систем в
+                                        реальном времени (Стек: Скрипты, Таблицы, Логика, DeepResearch, Frontend,
+                                        Backend).</span></li>
+                                <li><strong><span data-i18n="exp_desc_4_title">RAG-бот (Психотерапевт)</span>:</strong>
+                                    <span data-i18n="exp_desc_4">Специализированная система, векторизовавшая 30+
+                                        ключевых профессиональных книг для контекстно-точных рассуждений ИИ.</span>
+                                </li>
+                                <li><strong>Market App:</strong> <span data-i18n="exp_desc_5">Полномасштабный
+                                        Android-маркетплейс с интеграцией платежных шлюзов и сложной backend-логикой
+                                        (Frontend, Backend, Дизайн, Свайп и удобство).</span></li>
                             </ul>
                         </div>
 
                         <div class="exp-item">
                             <div class="exp-header">
                                 <span class="exp-title">Lead Architect</span>
-                                <span class="exp-date">2025 — Наст.</span>
+                                <span class="exp-date" data-i18n="exp_date_2">2025 — Наст.</span>
                             </div>
                             <span class="exp-company">Stealth Social Ecosystem</span>
                             <ul class="exp-list">
-                                <li>Проектирую 3D-визуальную социальную платформу нового поколения для фундаментального
-                                    изменения способов общения, творчества и обмена ценностями в сообществах.</li>
+                                <li data-i18n="exp_desc_6">Проектирую 3D-визуальную социальную платформу нового
+                                    поколения для фундаментального изменения способов общения, творчества и обмена
+                                    ценностями в сообществах.</li>
                             </ul>
                         </div>
 
                         <div class="exp-item">
                             <div class="exp-header">
-                                <span class="exp-title">Инженер пространственных данных & 3D Разработчик</span>
-                                <span class="exp-date">Январь 2022 — Март 2025</span>
+                                <span class="exp-title" data-i18n="exp_role_3">Инженер пространственных данных & 3D
+                                    Разработчик</span>
+                                <span class="exp-date" data-i18n="exp_date_3">Январь 2022 — Март 2025</span>
                             </div>
                             <span class="exp-company">Unreal Engine Systems</span>
                             <ul class="exp-list">
-                                <li>Разработка в Unreal Engine для сред с full-body трекингом в реальном времени.</li>
-                                <li>Настройка с нуля до живой реат-тайм трансляции: ретаргетинг, блупринты, создание
-                                    сцен и освещения.</li>
+                                <li data-i18n="exp_desc_7">Разработка в Unreal Engine для сред с full-body трекингом в
+                                    реальном времени.</li>
+                                <li data-i18n="exp_desc_8">Настройка с нуля до живой реат-тайм трансляции: ретаргетинг,
+                                    блупринты, создание сцен и освещения.</li>
                             </ul>
                         </div>
 
                         <div class="exp-item">
                             <div class="exp-header">
-                                <span class="exp-title">Разработка аудиодвижков и DSP</span>
+                                <span class="exp-title" data-i18n="exp_role_4">Разработка аудиодвижков и DSP</span>
                                 <span class="exp-date">2020 — 2022</span>
                             </div>
                             <span class="exp-company">Digital Signal Processing Projects</span>
                             <ul class="exp-list">
-                                <li>Разработал сверхсложную MIDI-архитектуру и движок генерации полиритмов,
-                                    превосходящий возможности человека.</li>
-                                <li>Создал высокопроизводительные браузерные генераторы аудиосигналов и веб-анализаторы
-                                    спектра (Spectrum Analyser, 3D Audio Analyser).</li>
-                                <li>Прошел путь от реверс-инжиниринга к реализации собственных уникальных идей.</li>
+                                <li data-i18n="exp_desc_9">Разработал сверхсложную MIDI-архитектуру и движок генерации
+                                    полиритмов, превосходящий возможности человека.</li>
+                                <li data-i18n="exp_desc_10">Создал высокопроизводительные браузерные генераторы
+                                    аудиосигналов и веб-анализаторы спектра (Spectrum Analyser, 3D Audio Analyser).</li>
+                                <li data-i18n="exp_desc_11">Прошел путь от реверс-инжиниринга к реализации собственных
+                                    уникальных идей.</li>
                             </ul>
                         </div>
                     </div>
                 </section>
 
                 <section id="projects">
-                    <h2>PROJECTS</h2>
+                    <h2 data-i18n="projects_title">PROJECTS</h2>
                     <div class="projects-grid">
                         <div class="project-card">
                             <img src="assets/image_1_1.jpeg" alt="Spectrum Analyzer" class="project-img">
                             <div class="project-info">
-                                <h3>Spectrum Analyser</h3>
-                                <p>Визуализация частот в реальном времени.</p>
+                                <h3 data-i18n="proj_title_1">Spectrum Analyser</h3>
+                                <p data-i18n="proj_desc_1">Визуализация частот в реальном времени.</p>
                             </div>
                         </div>
                         <div class="project-card">
                             <img src="assets/image_1_2.jpeg" alt="MIDI Generator" class="project-img">
                             <div class="project-info">
-                                <h3>MIDI Generator</h3>
-                                <p>Генератор музыкальных MIDI паттернов со сложной логикой и вычислениями.</p>
+                                <h3 data-i18n="proj_title_2">MIDI Generator</h3>
+                                <p data-i18n="proj_desc_2">Генератор музыкальных MIDI паттернов со сложной логикой и
+                                    вычислениями.</p>
                             </div>
                         </div>
                         <div class="project-card">
                             <img src="assets/image_1_0.jpeg" alt="AI Agent Orchestrator" class="project-img">
                             <div class="project-info">
-                                <h3>AI Agent Orchestrator</h3>
-                                <p>Визуальный интерфейс для управления группой автономных ИИ-агентов в реальном времени.
-                                </p>
+                                <h3 data-i18n="proj_title_3">AI Agent Orchestrator</h3>
+                                <p data-i18n="proj_desc_3">Визуальный интерфейс для управления группой автономных
+                                    ИИ-агентов в реальном времени.</p>
                             </div>
                         </div>
                         <div class="project-card">
                             <img src="assets/image_1_3.jpeg" alt="3D Motion Tracking" class="project-img">
                             <div class="project-info">
-                                <h3>3D Motion Tracking</h3>
-                                <p>Система захвата движений всего тела на базе Unreal Engine для виртуальных миров.</p>
+                                <h3 data-i18n="proj_title_4">3D Motion Tracking</h3>
+                                <p data-i18n="proj_desc_4">Система захвата движений всего тела на базе Unreal Engine для
+                                    виртуальных миров.</p>
                             </div>
                         </div>
                     </div>
                 </section>
 
                 <section id="education" class="card">
-                    <h2>ОБРАЗОВАНИЕ</h2>
+                    <h2 data-i18n="edu_title">ОБРАЗОВАНИЕ</h2>
                     <div class="experience-timeline">
                         <div class="exp-item">
                             <div class="exp-header">
-                                <span class="exp-title">Психология, Эмоциональный Интеллект и Лидерство</span>
+                                <span class="exp-title" data-i18n="edu_role">Психология, Эмоциональный Интеллект и
+                                    Лидерство</span>
                                 <span class="exp-date">2012 — 2015</span>
                             </div>
-                            <span class="exp-company">Тренинговый центр «100%»</span>
-                            <p class="about-text" style="color: var(--accent-primary); margin-bottom: 10px;">Продвинутая
-                                трехлетняя программа трансформации.</p>
+                            <span class="exp-company" data-i18n="edu_company">Тренинговый центр «100%»</span>
+                            <p class="about-text" style="color: var(--accent-primary); margin-bottom: 10px;"
+                                data-i18n="edu_desc_1">Продвинутая трехлетняя программа трансформации.</p>
                             <ul class="exp-list">
-                                <li>Глубокая трансформация личности, поведенческая психология, работа с импринтами.</li>
-                                <li>Командные упражнения и стрессовые сценарии для развития высшего уровня EQ и
-                                    стрессоустойчивости.</li>
-                                <li>Компетенции: архитектура нервной системы, перепрограммирование психики, уверенность
-                                    и лидерство.</li>
+                                <li data-i18n="edu_list_1">Глубокая трансформация личности, поведенческая психология,
+                                    работа с импринтами.</li>
+                                <li data-i18n="edu_list_2">Командные упражнения и стрессовые сценарии для развития
+                                    высшего уровня EQ и стрессоустойчивости.</li>
+                                <li data-i18n="edu_list_3">Компетенции: архитектура нервной системы,
+                                    перепрограммирование психики, уверенность и лидерство.</li>
                             </ul>
-                            <p class="about-text" style="margin-top: 15px; font-style: italic;">
+                            <p class="about-text" style="margin-top: 15px; font-style: italic;" data-i18n="edu_footer">
                                 Эта мощная психологическая база дает мне фреймворки для создания технологий, которые
                                 ощущаются по-настоящему «живыми».
                             </p>
@@ -628,6 +744,292 @@
 
     <script>
         lucide.createIcons();
+
+        const translations = {
+            ru: {
+                subtitle: "Vibe Coder & AI Systems Builder",
+                location: "Remote / China / Europe",
+                skills_title: "Skills & Tech",
+                skill_1: "AI Orchestration",
+                skill_2: "LLM / RAG",
+                skill_3: "Node Systems",
+                skill_4: "Unreal Engine",
+                skill_5: "FinTech",
+                skill_6: "Automation",
+                stats_products: "Продуктов запущено",
+                stats_api: "API Integrated",
+                stats_spatial: "Spatial Engineer",
+                stats_vibe: "Vibe Level",
+                about_title: "ОБО МНЕ",
+                about_1: "Я создаю визуальные оркестраторы для мультиагентных систем, которые позволяют наблюдать за созданием и поведением моделей ИИ в реальном времени.",
+                about_2: "За последний год я разработал более 10 сложных продуктов. Мой стек объединяет CLI, API и локальные модели в автономные системы из ИИ-агентов для кодинга приложений или имитирующие поведение человека с определенной базой знаний внутри.",
+                about_3: "Я создаю системы с нуля: от",
+                about_4: "(кастомная IDE, связывающая LLM с визуальными нодами) и специализированных",
+                about_5: "(бот-психотерапевт, векторизованный по 30+ книгам) до",
+                about_6: "(агрегация live-метрик из 50+ глобальных систем).",
+                about_7: "Я непрерывно учусь; ИИ восхищает и вдохновляет меня. В отличие от многих, я замечаю, что ИИ-модели склонны «лениться» и обходить задачи до тех пор, пока не возьмешь процесс под полный контроль и не проверишь их работу.",
+                about_8: "Мой бэкграунд в психологии позволяет разрабатывать пользовательские сценарии, которые по-настоящему понятны людям, даже если «под капотом» работает невероятно сложная логическая система. Мои проекты никогда не бывают статичными: они интерактивны, генерируют ноды или реагируют на звуковые частоты.",
+                about_9: "В таких проектах, как социальные сети или финансовые системы, заложено много уникальных идей, которыми я готов поделиться с лучшей командой, но не в резюме.",
+                exp_title: "ОПЫТ РАБОТЫ",
+                exp_role_1: "Независимый разработчик | Архитектор ИИ-систем",
+                exp_date_1: "Январь 2026 — Наст.",
+                exp_desc_1: "Мультиагентный оркестратор, связывающий CLI, API и локальные модели с отдельными визуальными нодами с механикой спавна в реальном времени для генерации кода.",
+                exp_desc_2_title: "Диалоговый автоответчик",
+                exp_desc_2: "Система с долгосрочной памятью о пользователе (БД), симулирующая человеческий ввод текста в реальном времени (Стек: Скрипты, Логика, SQLite, Firebase Hosting, VPS-сервер, Windows App).",
+                exp_desc_3: "FinTech-калькулятор маршрутизации, агрегирующий данные о комиссиях из 50+ глобальных систем в реальном времени (Стек: Скрипты, Таблицы, Логика, DeepResearch, Frontend, Backend).",
+                exp_desc_4_title: "RAG-бот (Психотерапевт)",
+                exp_desc_4: "Специализированная система, векторизовавшая 30+ ключевых профессиональных книг для контекстно-точных рассуждений ИИ.",
+                exp_desc_5: "Полномасштабный Android-маркетплейс с интеграцией платежных шлюзов и сложной backend-логикой (Frontend, Backend, Дизайн, Свайп и удобство).",
+                exp_date_2: "2025 — Наст.",
+                exp_desc_6: "Проектирую 3D-визуальную социальную платформу нового поколения для фундаментального изменения способов общения, творчества и обмена ценностями в сообществах.",
+                exp_role_3: "Инженер пространственных данных & 3D Разработчик",
+                exp_date_3: "Январь 2022 — Март 2025",
+                exp_desc_7: "Разработка в Unreal Engine для сред с full-body трекингом в реальном времени.",
+                exp_desc_8: "Настройка с нуля до живой реат-тайм трансляции: ретаргетинг, блупринты, создание сцен и освещения.",
+                exp_role_4: "Разработка аудиодвижков и DSP",
+                exp_desc_9: "Разработал сверхсложную MIDI-архитектуру и движок генерации полиритмов, превосходящий возможности человека.",
+                exp_desc_10: "Создал высокопроизводительные браузерные генераторы аудиосигналов и веб-анализаторы спектра (Spectrum Analyser, 3D Audio Analyser).",
+                exp_desc_11: "Прошел путь от реверс-инжиниринга к реализации собственных уникальных идей.",
+                proj_desc_1: "Визуализация частот в реальном времени.",
+                proj_title_1: "Spectrum Analyser",
+                proj_desc_2: "Генератор музыкальных MIDI паттернов со сложной логикой и вычислениями.",
+                proj_title_2: "MIDI Generator",
+                proj_title_3: "AI Agent Orchestrator",
+                proj_desc_3: "Визуальный интерфейс для управления группой автономных ИИ-агентов в реальном времени.",
+                proj_title_4: "3D Motion Tracking",
+                proj_desc_4: "Система захвата движений всего тела на базе Unreal Engine для виртуальных миров.",
+                projects_title: "ПРОЕКТЫ",
+                edu_title: "ОБРАЗОВАНИЕ",
+                edu_role: "Психология, Эмоциональный Интеллект и Лидерство",
+                edu_company: "Тренинговый центр «100%»",
+                edu_desc_1: "Продвинутая трехлетняя программа трансформации.",
+                edu_list_1: "Глубокая трансформация личности, поведенческая психология, работа с импринтами.",
+                edu_list_2: "Командные упражнения и стрессовые сценарии для развития высшего уровня EQ и стрессоустойчивости.",
+                edu_list_3: "Компетенции: архитектура нервной системы, перепрограммирование психики, уверенность и лидерство.",
+                edu_footer: "Эта мощная психологическая база дает мне фреймворки для создания технологий, которые ощущаются по-настоящему «живыми»."
+            },
+            en: {
+                subtitle: "Vibe Coder & AI Systems Builder",
+                location: "Remote / China / Europe",
+                skills_title: "Skills & Tech",
+                skill_1: "AI Orchestration",
+                skill_2: "LLM / RAG",
+                skill_3: "Node Systems",
+                skill_4: "Unreal Engine",
+                skill_5: "FinTech",
+                skill_6: "Automation",
+                stats_products: "Products Launched",
+                stats_api: "API Integrated",
+                stats_spatial: "Spatial Engineer",
+                stats_vibe: "Vibe Level",
+                about_title: "ABOUT ME",
+                about_1: "I build visual orchestrators for multi-agent systems that allow observing the creation and behavior of AI models in real-time.",
+                about_2: "Over the past year, I have developed more than 10 complex products. My stack combines CLI, API, and local models into autonomous systems of AI agents for application coding or simulating human behavior with a specific internal knowledge base.",
+                about_3: "I create systems from scratch: from",
+                about_4: "(custom IDE connecting LLMs with visual nodes) and specialized",
+                about_5: "(psychotherapist bot vectorized across 30+ books) to",
+                about_6: "(aggregation of live metrics from 50+ global systems).",
+                about_7: "I am constantly learning; AI fascinates and inspires me. Unlike many, I notice that AI models tend to be 'lazy' and bypass tasks until you take full control of the process and verify their work.",
+                about_8: "My background in psychology allows me to develop user scenarios that are truly understandable to people, even if there is incredibly complex logical systems 'under the hood'. My projects are never static: they are interactive, generate nodes, or react to sound frequencies.",
+                about_9: "In projects such as social networks or financial systems, there are many unique ideas that I am ready to share with the best team, but not in a resume.",
+                exp_title: "WORK EXPERIENCE",
+                exp_role_1: "Independent Developer | AI Systems Architect",
+                exp_date_1: "January 2026 — Present",
+                exp_desc_1: "Multi-agent orchestrator connecting CLI, API, and local models with separate visual nodes featuring real-time spawn mechanics for code generation.",
+                exp_desc_2_title: "Dialogue Auto-responder",
+                exp_desc_2: "System with long-term user memory (DB) simulating human text input in real-time (Stack: Scripts, Logic, SQLite, Firebase Hosting, VPS server, Windows App).",
+                exp_desc_3: "FinTech routing calculator aggregating commission data from 50+ global systems in real-time (Stack: Scripts, Spreadsheets, Logic, DeepResearch, Frontend, Backend).",
+                exp_desc_4_title: "RAG-bot (Psychotherapist)",
+                exp_desc_4: "Specialized system vectorized across 30+ key professional books for contextually accurate AI reasoning.",
+                exp_desc_5: "Full-scale Android marketplace with payment gateway integration and complex backend logic (Frontend, Backend, Design, Swipe-based UX).",
+                exp_date_2: "2025 — Present",
+                exp_desc_6: "Designing a next-generation 3D visual social platform aimed at fundamentally changing ways of communication, creativity, and value exchange in communities.",
+                exp_role_3: "Spatial Data Engineer & 3D Developer",
+                exp_date_3: "January 2022 — March 2025",
+                exp_desc_7: "Development in Unreal Engine for environments with real-time full-body tracking.",
+                exp_desc_8: "Setup from scratch to live real-time broadcast: retargeting, blueprints, scene and lighting creation.",
+                exp_role_4: "Audio Engines & DSP Development",
+                exp_desc_9: "Developed an ultra-complex MIDI architecture and polyrhythm generation engine capable of processing melodic patterns exceeding human capabilities.",
+                exp_desc_10: "Created high-performance browser-based audio signal generators and web spectrum analyzers (Spectrum Analyser, 3D Audio Analyser).",
+                exp_desc_11: "Progressed from reverse engineering to implementing my own unique ideas.",
+                proj_desc_1: "Real-time frequency visualization.",
+                proj_title_1: "Spectrum Analyser",
+                proj_desc_2: "MIDI pattern generator with complex logic and computations.",
+                proj_title_2: "MIDI Generator",
+                proj_title_3: "AI Agent Orchestrator",
+                proj_desc_3: "Visual interface for managing a group of autonomous AI agents in real-time.",
+                proj_title_4: "3D Motion Tracking",
+                proj_desc_4: "Full-body motion capture system based on Unreal Engine for virtual worlds.",
+                projects_title: "PROJECTS",
+                edu_title: "EDUCATION",
+                edu_role: "Psychology, Emotional Intelligence & Leadership",
+                edu_company: "Training Center '100%'",
+                edu_desc_1: "Advanced three-year transformation program.",
+                edu_list_1: "Deep personality transformation, behavioral psychology, work with imprints.",
+                edu_list_2: "Team exercises and stress scenarios for developing a high level of EQ and stress resistance.",
+                edu_list_3: "Key competencies: nervous system architecture, mental reprogramming, confidence, and leadership.",
+                edu_footer: "This powerful psychological base gives me the frameworks for creating technologies that feel truly 'alive'."
+            },
+            zh: {
+                subtitle: "Vibe Coder & 人工智能系统架构师",
+                location: "远程 / 中国 / 欧洲",
+                skills_title: "技能与技术",
+                skill_1: "人工智能编排",
+                skill_2: "大语言模型 / RAG",
+                skill_3: "节点系统",
+                skill_4: "虚幻引擎",
+                skill_5: "金融科技",
+                skill_6: "自动化",
+                stats_products: "已发布产品",
+                stats_api: "集成的 API",
+                stats_spatial: "空间工程师",
+                stats_vibe: "状态等级",
+                about_title: "关于我",
+                about_1: "我构建多智能体系统的可视化协调器，允许实时观察人工智能模型的创建和行为。",
+                about_2: "在过去的一年里，我开发了 10 多个复杂的产品。我的技术栈将 CLI、API 和本地模型结合到人工智能代理的自主系统中，用于应用程序编码或模拟具有特定内部知识库的人类行为。",
+                about_3: "我从头开始创建系统：从",
+                about_4: "（将大语言模型与可视化节点连接的自定义 IDE）和专业的",
+                about_5: "（多达 30 多本书向量化的心理治疗机器人）到",
+                about_6: "（聚合来自 50 多个全球系统的实时指标）。",
+                about_7: "我不断学习；人工智能令我着迷并激励着我。与许多人不同，我注意到人工智能模型往往会“偷懒”并绕过任务，直到你完全控制过程并验证它们的工作。",
+                about_8: "我的心理学背景使我能够开发出真正易于理解的用户场景，即使在“引擎盖下”运行着极其复杂的逻辑系统。我的项目从来不是静态的：它们是交互式的，可以生成节点或对声音频率做出反应。",
+                about_9: "在社交网络或金融系统等项目中，蕴含着许多独特的想法，我准备与最好的团队分享，但不在简历中展示。",
+                exp_title: "工作经验",
+                exp_role_1: "独立开发者 | 人工智能系统架构师",
+                exp_date_1: "2026年1月 — 至今",
+                exp_desc_1: "连接 CLI、API 和本地模型的多智能体协调器，具有用于代码生成的实时生成机制的独立可视化节点。",
+                exp_desc_2_title: "对话自动回复器",
+                exp_desc_2: "具有长期用户记忆（数据库）的系统，实时模拟人类文本输入（技术栈：脚本、逻辑、SQLite、Firebase 托管、VPS 服务器、Windows 应用程序）。",
+                exp_desc_3: "金融科技路由计算器，实时聚合来自 50 多个全球系统的佣金数据（技术栈：脚本、表格、逻辑、深度搜索、前端、后端）。",
+                exp_desc_4_title: "RAG 机器人（心理治疗师）",
+                exp_desc_4: "专业系统，通过 30 多本关键专业书籍进行向量化，实现上下文准确的人工智能推理。",
+                exp_desc_5: "具有支付网关集成和复杂后端逻辑的全尺寸安卓市场（前端、后端、设计、滑动交互设计）。",
+                exp_date_2: "2025 — 至今",
+                exp_desc_6: "设计下一代 3D 可视化社交平台，旨在从根本上改变社区内的沟通、创造和价值交换方式。",
+                exp_role_3: "空间数据工程师 & 3D 开发者",
+                exp_date_3: "2022年1月 — 2025年3月",
+                exp_desc_7: "在虚幻引擎中开发具有实时全身追踪的环境。",
+                exp_desc_8: "从零开始设置到实时直播：重定向、蓝图、场景和灯光创建。",
+                exp_role_4: "音频引擎及数字信号处理开发",
+                exp_desc_9: "开发了超复杂的 MIDI 架构和多节奏生成引擎，能够处理超越人类能力的旋律模式。",
+                exp_desc_10: "创建了高性能的基于浏览器的音频信号生成器和网页频谱分析仪（频谱分析仪、3D 音频分析仪）。",
+                exp_desc_11: "从逆向工程过渡到实现我自有的独特想法。",
+                proj_desc_1: "实时频率可视化。",
+                proj_title_1: "频谱分析仪",
+                proj_desc_2: "具有复杂逻辑和计算功能的 MIDI 模式生成器。",
+                proj_title_2: "MIDI 生成器",
+                proj_title_3: "人工智能代理编排器",
+                proj_desc_3: "用于实时管理自主人工智能代理组的可视化界面。",
+                proj_title_4: "3D 运动追踪",
+                proj_desc_4: "基于虚幻引擎的虚拟世界全身动作捕捉系统。",
+                projects_title: "项目展示",
+                edu_title: "教育经历",
+                edu_role: "心理学、情感智能与领导力",
+                edu_company: "“100%”培训中心",
+                edu_desc_1: "高级三年转型计划。",
+                edu_list_1: "深层人格转型、行为心理学、印记工作。",
+                edu_list_2: "团队练习和压力场景，旨在培养高水平的情商和抗压能力。",
+                edu_list_3: "核心能力：神经系统架构、心理再编程、自信与领导力。",
+                edu_footer: "这种强大的心理学基础为我创建真正感觉“有生命”的技术提供了框架。"
+            }
+        };
+
+        function switchLanguage(lang) {
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`btn-${lang}`).classList.add('active');
+
+            // Find all elements with data-i18n attribute
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.innerText = translations[lang][key];
+                }
+            });
+
+            // Update HTML lang attribute
+            document.documentElement.lang = (lang === 'zh') ? 'zh-CN' : lang;
+
+            // Save preference
+            localStorage.setItem('preferredLang', lang);
+        }
+
+        // Initialize from localStorage or default
+        window.addEventListener('load', () => {
+            const savedLang = localStorage.getItem('preferredLang') || 'ru';
+            switchLanguage(savedLang);
+        });
+
+        // Skill Connections Logic
+        const skillsCanvas = document.getElementById('skills-canvas');
+        const skillTags = {
+            'orch': document.getElementById('skill-orch'),
+            'llm': document.getElementById('skill-llm'),
+            'nodes': document.getElementById('skill-nodes'),
+            'unreal': document.getElementById('skill-unreal'),
+            'fintech': document.getElementById('skill-fintech'),
+            'auto': document.getElementById('skill-auto')
+        };
+
+        const connectionsMap = {
+            'orch': ['llm'],
+            'llm': ['auto', 'orch'],
+            'fintech': ['nodes'],
+            'nodes': ['fintech'],
+            'auto': ['orch', 'llm', 'nodes', 'unreal', 'fintech']
+        };
+
+        function drawConnections(activeId) {
+            skillsCanvas.innerHTML = '';
+            if (!activeId || !connectionsMap[activeId]) return;
+
+            const targets = connectionsMap[activeId];
+            const startRect = skillTags[activeId].getBoundingClientRect();
+            const containerRect = skillsCanvas.getBoundingClientRect();
+
+            const startX = (startRect.left + startRect.width / 2) - containerRect.left;
+            const startY = (startRect.top + startRect.height / 2) - containerRect.top;
+
+            targets.forEach(targetId => {
+                const targetEl = skillTags[targetId];
+                if (!targetEl) return;
+
+                const endRect = targetEl.getBoundingClientRect();
+                const endX = (endRect.left + endRect.width / 2) - containerRect.left;
+                const endY = (endRect.top + endRect.height / 2) - containerRect.top;
+
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                // Create a smooth curve instead of a straight line
+                const midX = (startX + endX) / 2;
+                const midY = (startY + endY) / 2;
+                const dx = endX - startX;
+                const dy = endY - startY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                // Bend the path slightly
+                const qx = midX + (dy * 0.2);
+                const qy = midY - (dx * 0.2);
+
+                const d = `M ${startX} ${startY} Q ${qx} ${qy} ${endX} ${endY}`;
+                line.setAttribute('d', d);
+                line.setAttribute('class', 'connection-line active');
+                skillsCanvas.appendChild(line);
+            });
+        }
+
+        Object.keys(skillTags).forEach(id => {
+            skillTags[id].addEventListener('mouseenter', () => drawConnections(id));
+            skillTags[id].addEventListener('mouseleave', () => {
+                const activeLines = skillsCanvas.querySelectorAll('.connection-line');
+                activeLines.forEach(l => l.style.opacity = '0');
+                setTimeout(() => { if (skillsCanvas.innerHTML !== '') skillsCanvas.innerHTML = ''; }, 400);
+            });
+        });
+
+        window.addEventListener('resize', () => { skillsCanvas.innerHTML = ''; });
 
         // Subtle parallax effect for cards
         document.addEventListener('mousemove', (e) => {
