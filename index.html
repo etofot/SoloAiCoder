@@ -557,11 +557,33 @@
         }
 
         .project-card:nth-child(3) .project-img {
-            transform-origin: bottom left;
+            transform-origin: center left;
         }
 
         .project-card:nth-child(4) .project-img {
+            transform-origin: center right;
+        }
+
+        .project-card:nth-child(5) .project-img {
+            transform-origin: bottom left;
+        }
+
+        .project-card:nth-child(6) .project-img {
             transform-origin: bottom right;
+        }
+
+        .placeholder-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: repeating-linear-gradient(45deg, rgba(0, 245, 255, 0.02), rgba(0, 245, 255, 0.02) 10px, rgba(0, 245, 255, 0.05) 10px, rgba(0, 245, 255, 0.05) 20px);
+            color: var(--accent-primary);
+            font-family: 'Outfit';
+            font-weight: 800;
+            letter-spacing: 2px;
+            font-size: 1.2rem;
+            border: 1px dashed rgba(0, 245, 255, 0.3);
+            text-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
         }
 
         .project-card:hover .project-img {
@@ -783,42 +805,62 @@
                     <div class="projects-grid">
                         <div class="project-card">
                             <div class="project-img-wrapper">
-                                <img src="assets/image_1_0.jpeg" alt="Spectrum Analyser" class="project-img">
+                                <img src="assets/image_1_0.jpeg" alt="AI Agent Orchestrator" class="project-img">
                             </div>
                             <div class="project-content">
-                                <div class="project-title" data-i18n="projtitle1">Spectrum Analyser</div>
-                                <div class="project-desc" data-i18n="projdesc1">Визуализация частот в реальном времени.
+                                <div class="project-title" data-i18n="projtitle1">AI Agent Orchestrator</div>
+                                <div class="project-desc" data-i18n="projdesc1">Визуальный интерфейс для управления
+                                    группой автономных ИИ-агентов.</div>
+                            </div>
+                        </div>
+                        <div class="project-card">
+                            <div class="project-img-wrapper">
+                                <img src="assets/image_1_1.jpeg" alt="Spectrum Analyser" class="project-img">
+                            </div>
+                            <div class="project-content">
+                                <div class="project-title" data-i18n="projtitle2">Spectrum Analyser</div>
+                                <div class="project-desc" data-i18n="projdesc2">Визуализация частот в реальном времени.
                                 </div>
                             </div>
                         </div>
                         <div class="project-card">
                             <div class="project-img-wrapper">
-                                <img src="assets/image_1_1.jpeg" alt="MIDI Generator" class="project-img">
+                                <img src="assets/image_1_2.jpeg" alt="MIDI Generator" class="project-img">
                             </div>
                             <div class="project-content">
-                                <div class="project-title" data-i18n="projtitle2">MIDI Generator</div>
-                                <div class="project-desc" data-i18n="projdesc2">Генератор музыкальных MIDI паттернов со
-                                    сложной логикой и вычислениями.</div>
+                                <div class="project-title" data-i18n="projtitle3">MIDI Generator</div>
+                                <div class="project-desc" data-i18n="projdesc3">Генератор музыкальных паттернов со
+                                    сложной логикой вычислений.</div>
                             </div>
                         </div>
                         <div class="project-card">
                             <div class="project-img-wrapper">
-                                <img src="assets/image_1_2.jpeg" alt="AI Agent Orchestrator" class="project-img">
+                                <img src="assets/image_1_3.jpeg" alt="3D Audio Analyser" class="project-img">
                             </div>
                             <div class="project-content">
-                                <div class="project-title" data-i18n="projtitle3">AI Agent Orchestrator</div>
-                                <div class="project-desc" data-i18n="projdesc3">Визуальный интерфейс для управления
-                                    группой автономных ИИ-агентов в реальном времени.</div>
+                                <div class="project-title" data-i18n="projtitle4">3D Audio Analyser</div>
+                                <div class="project-desc" data-i18n="projdesc4">Трехмерная визуализация звука и
+                                    спектральных данных в веб-браузере.</div>
                             </div>
                         </div>
                         <div class="project-card">
                             <div class="project-img-wrapper">
-                                <img src="assets/image_1_3.jpeg" alt="3D Motion Tracking" class="project-img">
+                                <div class="project-img placeholder-box">COMING SOON</div>
                             </div>
                             <div class="project-content">
-                                <div class="project-title" data-i18n="projtitle4">3D Motion Tracking</div>
-                                <div class="project-desc" data-i18n="projdesc4">Система захвата движений всего тела на
-                                    базе Unreal Engine для виртуальных миров.</div>
+                                <div class="project-title" data-i18n="projtitle5">3D Motion Capture</div>
+                                <div class="project-desc" data-i18n="projdesc5">Захват движений всего тела на базе
+                                    Unreal Engine для виртуальных миров.</div>
+                            </div>
+                        </div>
+                        <div class="project-card">
+                            <div class="project-img-wrapper">
+                                <div class="project-img placeholder-box">COMING SOON</div>
+                            </div>
+                            <div class="project-content">
+                                <div class="project-title" data-i18n="projtitle6">FinTech App / Router</div>
+                                <div class="project-desc" data-i18n="projdesc6">Агрегатор платежных путей и калькулятор
+                                    комиссионных маршрутов.</div>
                             </div>
                         </div>
                     </div>
@@ -876,10 +918,12 @@
                 expdesc10: 'Создал высокопроизводительные браузерные генераторы аудиосигналов и веб-анализаторы спектра: Spectrum Analyser, 3D Audio Analyser.',
                 expdesc11: 'Прошел путь от реверс-инжиниринга к реализации собственных уникальных идей.',
                 projectstitle: 'ПРОЕКТЫ',
-                projtitle1: 'Spectrum Analyser', projdesc1: 'Визуализация частот в реальном времени.',
-                projtitle2: 'MIDI Generator', projdesc2: 'Генератор музыкальных MIDI паттернов со сложной логикой и вычислениями.',
-                projtitle3: 'AI Agent Orchestrator', projdesc3: 'Визуальный интерфейс для управления группой автономных ИИ-агентов в реальном времени.',
-                projtitle4: '3D Motion Tracking', projdesc4: 'Система захвата движений всего тела на базе Unreal Engine для виртуальных миров.'
+                projtitle1: 'AI Agent Orchestrator', projdesc1: 'Визуальный интерфейс для управления группой автономных ИИ-агентов в реальном времени.',
+                projtitle2: 'Spectrum Analyser', projdesc2: 'Визуализация частот в реальном времени.',
+                projtitle3: 'MIDI Generator', projdesc3: 'Генератор музыкальных паттернов со сложной логикой вычислений.',
+                projtitle4: '3D Audio Analyser', projdesc4: 'Трехмерная визуализация звука и спектральных данных в веб-браузере.',
+                projtitle5: '3D Motion Capture', projdesc5: 'Захват движений всего тела на базе Unreal Engine для виртуальных миров.',
+                projtitle6: 'FinTech App / Router', projdesc6: 'Агрегатор платежных путей и калькулятор сложных комиссионных маршрутов.'
             },
             en: {
                 subtitle: 'Vibe Coder / AI Systems Builder', location: 'Remote · China / Europe',
@@ -904,10 +948,12 @@
                 expdesc10: 'Created high-performance browser-based audio analyzers.',
                 expdesc11: 'Progressed from reverse engineering to original architectural ideas.',
                 projectstitle: 'PROJECTS',
-                projtitle1: 'Spectrum Analyser', projdesc1: 'Real-time frequency visualization.',
-                projtitle2: 'MIDI Generator', projdesc2: 'MIDI pattern generator with complex logic and computations.',
-                projtitle3: 'AI Agent Orchestrator', projdesc3: 'Visual interface for managing a group of autonomous AI agents in real time.',
-                projtitle4: '3D Motion Tracking', projdesc4: 'Full-body motion capture system based on Unreal Engine for virtual worlds.'
+                projtitle1: 'AI Agent Orchestrator', projdesc1: 'Visual interface for managing a group of autonomous AI agents in real time.',
+                projtitle2: 'Spectrum Analyser', projdesc2: 'Real-time frequency visualization.',
+                projtitle3: 'MIDI Generator', projdesc3: 'MIDI pattern generator with complex logic and computations.',
+                projtitle4: '3D Audio Analyser', projdesc4: 'Three-dimensional audio and spectral data visualization in the web browser.',
+                projtitle5: '3D Motion Capture', projdesc5: 'Full-body motion capture system based on Unreal Engine for virtual worlds.',
+                projtitle6: 'FinTech App / Router', projdesc6: 'Payment routing aggregator and complex fee structure calculator.'
             },
             zh: {
                 subtitle: 'Vibe Coder / AI系统架构师', location: '远程 · 中国 / 欧洲',
@@ -932,10 +978,12 @@
                 expdesc10: '创建了高性能的浏览器端音频频谱分析仪。',
                 expdesc11: '从逆向工程到实现自己独特想法。',
                 projectstitle: '项目',
-                projtitle1: '频谱分析仪', projdesc1: '实时频率可视化。',
-                projtitle2: 'MIDI生成器', projdesc2: '具有复杂逻辑和计算的MIDI模式生成器。',
-                projtitle3: 'AI代理编排器', projdesc3: '用于实时管理一组自主AI代理的可视化界面。',
-                projtitle4: '3D动作捕捉', projdesc4: '基于虚幻引擎的虚拟世界全身动作捕捉系统。'
+                projtitle1: 'AI代理编排器', projdesc1: '用于实时管理一组自主AI代理的可视化界面。',
+                projtitle2: '频谱分析仪', projdesc2: '实时频率可视化。',
+                projtitle3: 'MIDI生成器', projdesc3: '具有复杂逻辑和计算的MIDI模式生成器。',
+                projtitle4: '3D音频分析仪', projdesc4: '浏览器中的三维音频和频谱数据可视化。',
+                projtitle5: '3D动作捕捉', projdesc5: '基于虚幻引擎的虚拟世界全身动作捕捉系统。',
+                projtitle6: '金融科技路由', projdesc6: '支付路由聚合器和复杂费用结构计算器。'
             }
         };
 
