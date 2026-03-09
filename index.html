@@ -631,6 +631,94 @@
                 transform: scale(1.08);
             }
         }
+
+        /* Audio Player */
+        .audio-player-card {
+            margin-top: 24px;
+            padding: 16px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .audio-player {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .audio-btn {
+            background: var(--accent-primary);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+            transition: 0.3s;
+            color: #000;
+        }
+
+        .audio-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--accent-primary);
+        }
+
+        .audio-info {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .audio-progress-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .audio-progress-bar {
+            height: 100%;
+            background: var(--accent-primary);
+            width: 0%;
+            border-radius: 2px;
+            box-shadow: 0 0 8px var(--accent-primary);
+        }
+
+        .audio-vol-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .audio-slider {
+            -webkit-appearance: none;
+            flex-grow: 1;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+
+        .audio-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            cursor: pointer;
+            box-shadow: 0 0 5px var(--accent-primary);
+        }
     </style>
 </head>
 
@@ -660,6 +748,28 @@
                         <button class="lang-btn" onclick="switchLanguage('zh')" id="btn-zh">ZH</button>
                     </div>
                 </header>
+
+                <div class="card audio-player-card">
+                    <h2 data-i18n="audiotitle" style="margin-bottom:16px; font-size:0.9rem;">AUDIO RESUME</h2>
+                    <div class="audio-player">
+                        <audio id="resume-audio" src="assets/RESUME.MP3"></audio>
+                        <div class="audio-controls">
+                            <button class="audio-btn" id="audio-play-pause">
+                                <i data-lucide="play" id="audio-icon" style="width:20px; height:20px;"></i>
+                            </button>
+                            <div class="audio-info">
+                                <div class="audio-progress-container" id="audio-progress-container">
+                                    <div class="audio-progress-bar" id="audio-progress"></div>
+                                </div>
+                                <div class="audio-vol-row">
+                                    <i data-lucide="volume-2" style="width:14px; color:var(--text-secondary);"></i>
+                                    <input type="range" id="audio-volume" min="0" max="1" step="0.05" value="0.7"
+                                        class="audio-slider">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="card" style="margin-top:24px;">
                     <h2 data-i18n="skillstitle">Skills & Tech</h2>
@@ -890,6 +1000,40 @@
             });
         });
 
+        // Audio Player Logic
+        const audio = document.getElementById('resume-audio');
+        const playBtn = document.getElementById('audio-play-pause');
+        const audioIcon = document.getElementById('audio-icon');
+        const progress = document.getElementById('audio-progress');
+        const progressCont = document.getElementById('audio-progress-container');
+        const volume = document.getElementById('audio-volume');
+
+        playBtn.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+                audioIcon.setAttribute('data-lucide', 'pause');
+            } else {
+                audio.pause();
+                audioIcon.setAttribute('data-lucide', 'play');
+            }
+            lucide.createIcons();
+        });
+
+        audio.addEventListener('timeupdate', () => {
+            const pct = (audio.currentTime / audio.duration) * 100;
+            progress.style.width = pct + '%';
+        });
+
+        progressCont.addEventListener('click', (e) => {
+            const rect = progressCont.getBoundingClientRect();
+            const pos = (e.clientX - rect.left) / rect.width;
+            audio.currentTime = pos * audio.duration;
+        });
+
+        volume.addEventListener('input', (e) => {
+            audio.volume = e.target.value;
+        });
+
         /* ===================== TRANSLATIONS ===================== */
         const T = {
             ru: {
@@ -923,7 +1067,8 @@
                 projtitle3: 'MIDI Generator', projdesc3: 'Генератор музыкальных паттернов со сложной логикой вычислений.',
                 projtitle4: '3D Audio Analyser', projdesc4: 'Трехмерная визуализация звука и спектральных данных в веб-браузере.',
                 projtitle5: '3D Motion Capture', projdesc5: 'Захват движений всего тела на базе Unreal Engine для виртуальных миров.',
-                projtitle6: 'FinTech App / Router', projdesc6: 'Агрегатор платежных путей и калькулятор сложных комиссионных маршрутов.'
+                projtitle6: 'FinTech App / Router', projdesc6: 'Агрегатор платежных путей и калькулятор сложных комиссионных маршрутов.',
+                audiotitle: 'АУДИО РЕЗЮМЕ'
             },
             en: {
                 subtitle: 'Vibe Coder / AI Systems Builder', location: 'Remote · China / Europe',
@@ -953,7 +1098,8 @@
                 projtitle3: 'MIDI Generator', projdesc3: 'MIDI pattern generator with complex logic and computations.',
                 projtitle4: '3D Audio Analyser', projdesc4: 'Three-dimensional audio and spectral data visualization in the web browser.',
                 projtitle5: '3D Motion Capture', projdesc5: 'Full-body motion capture system based on Unreal Engine for virtual worlds.',
-                projtitle6: 'FinTech App / Router', projdesc6: 'Payment routing aggregator and complex fee structure calculator.'
+                projtitle6: 'FinTech App / Router', projdesc6: 'Payment routing aggregator and complex fee structure calculator.',
+                audiotitle: 'AUDIO RESUME'
             },
             zh: {
                 subtitle: 'Vibe Coder / AI系统架构师', location: '远程 · 中国 / 欧洲',
@@ -983,7 +1129,8 @@
                 projtitle3: 'MIDI生成器', projdesc3: '具有复杂逻辑和计算的MIDI模式生成器。',
                 projtitle4: '3D音频分析仪', projdesc4: '浏览器中的三维音频和频谱数据可视化。',
                 projtitle5: '3D动作捕捉', projdesc5: '基于虚幻引擎的虚拟世界全身动作捕捉系统。',
-                projtitle6: '金融科技路由', projdesc6: '支付路由聚合器和复杂费用结构计算器。'
+                projtitle6: '金融科技路由', projdesc6: '支付路由聚合器—和复杂费用结构计算器。',
+                audiotitle: '音频简历'
             }
         };
 
