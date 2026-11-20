@@ -1288,16 +1288,6 @@
           </div>
         </div>
 
-        <!-- Audio Resume Bar -->
-        <div class="audio-player-card">
-          <button class="audio-play-btn" id="audioToggleBtn" title="Слушать аудио-резюме">▶</button>
-          <div style="flex: 1;">
-            <div style="font-size: 13px; font-weight: 700; color: var(--text-white);">Аудио-резюме кандидата</div>
-            <div style="font-size: 11.5px; color: var(--text-muted);" id="audioStatusText">Нажмите play для воспроизведения голоса автора</div>
-          </div>
-          <audio id="resumeAudio" src="assets/RESUME.MP3" preload="metadata"></audio>
-        </div>
-
         <!-- HR Snapshot Matrix (Recessed Socket with Interactive PCB Connections) -->
         <div class="neu-well hr-matrix">
           <div class="matrix-item">
@@ -1768,34 +1758,6 @@
           allowfullscreen>
         </iframe>
       `;
-    }
-
-    // Audio Player Toggle
-    const audio = document.getElementById('resumeAudio');
-    const audioBtn = document.getElementById('audioToggleBtn');
-    const audioStatus = document.getElementById('audioStatusText');
-
-    if (audio && audioBtn) {
-      audioBtn.addEventListener('click', () => {
-        if (audio.paused) {
-          audio.play().then(() => {
-            audioBtn.textContent = '⏸';
-            audioStatus.textContent = 'Воспроизведение аудио-резюме...';
-          }).catch(err => {
-            console.error('Audio playback error:', err);
-            audioStatus.textContent = 'Нажмите еще раз для запуска аудио';
-          });
-        } else {
-          audio.pause();
-          audioBtn.textContent = '▶';
-          audioStatus.textContent = 'Воспроизведение приостановлено';
-        }
-      });
-
-      audio.addEventListener('ended', () => {
-        audioBtn.textContent = '▶';
-        audioStatus.textContent = 'Аудио-резюме завершено';
-      });
     }
 
     // Lightbox modal logic
