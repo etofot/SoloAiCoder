@@ -1,22 +1,22 @@
-# SoloAiCoder - Vision UI Resume
+# Юрий Андриенко — Портфолио & Резюме Геймдизайнера (Realistic Neumorphism)
 
-This repository contains the high-fidelity Vision UI resume for **Yuki Lee**, translated into Russian and optimized for a premium dashboard-style experience.
+Интерактивное веб-резюме и портфолио системного и технического геймдизайнера / архитектора ИИ-агентов.
 
-## ✨ Features
-- **Modern Design**: Inspired by futuristic glassmorphism and dashboard aesthetics.
-- **Dynamic Elements**: Smooth parallax effects and interactive hover states.
-- **Optimized for Web**: Fast loading with clean semantic HTML and Lucide icons.
-- **Mobile Responsive**: Adapts perfectly to different screen sizes.
+## 🚀 Живой сайт
+Опубликовано на GitHub Pages: **[https://etofot.github.io/SoloAiCoder/](https://etofot.github.io/SoloAiCoder/)**
 
-## 🚀 Living Site
-You can view the live resume at: [https://etofot.github.io/SoloAiCoder/](https://etofot.github.io/SoloAiCoder/)
-*(Note: Ensure GitHub Pages is enabled in Settings > Pages)*
+## ✨ Особенности веб-версии
+- **Realistic Neumorphism UI**: дизайн на базе палитры темного сланца и теплого янтаря с направленным светом и тактильными элементами.
+- **Встроенные видео геймплея и инструментов**: прямое воспроизведение RunboyZ, Roadster-X и Стенда 3D-аватара (D.Va) без необходимости уходить со страницы.
+- **Все блоки развернуты сразу**: мгновенный доступ ко всем метрикам, архитектурным решениям и экономическим балансам без скрытых аккордеонов.
+- **Интерактивный лайтбокс**: просмотр реальных фото наручного прототипа WalkMan AI Agent (с автономными вызовами MCP) и пайплайнов 3D-моделирования в высоком разрешении.
+- **Аудио-резюме**: встроенный плеер для голосовой презентации.
+- **Скачивание PDF**: прямая ссылка на официальный A4-документ резюме.
 
-## 🛠 Tech Stack
-- HTML5
-- CSS3 (Vanilla)
-- Lucide Icons
-- JavaScript (Subtle Parallax)
-
----
-*Created with ❤️ by Antigravity AI*
+## 🛠 Проекты
+- **RunboyZ** (Duel of Pillars) — соревновательный 3D экшен-раннер (Three.js / React 19 / Node.js)
+- **Roadster-X** — 3D аркадная гонка с инвертированной гравитацией (Three.js / Rapier3D / GamePush)
+- **Стенд 3D-аватара & Real-Time LipSync** — настройка скелетной мимики на 80 костей без блендшейпов (D.Va)
+- **WalkMan AI Agent (Wireless)** — наручный физический агент с 3D-аватаром, голосом и инструментами Model Context Protocol (MCP)
+- **Motion Capture Комплекс** — костюм Rokoko Smartsuit Pro + перчатки Smartgloves + Apple ARKit
+- **PILORAMA, RTS Generals, Life Sim Online, Heat Rush**

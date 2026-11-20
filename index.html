@@ -1,1301 +1,1395 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YUKI LEE — Matrix Experience</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@100..900&display=swap"
-        rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        :root {
-            --bg-deep: #060b26;
-            --bg-card: rgba(15, 21, 53, 0.7);
-            --accent-primary: #00f5ff;
-            --accent-secondary: #4d5dfb;
-            --text-primary: #ffffff;
-            --text-secondary: #a0aec0;
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --glow-color: rgba(0, 245, 255, 0.3);
-            --trace-cyan: #00f5ff;
-            --trace-blue: #4d5dfb;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-deep);
-            color: var(--text-primary);
-            min-height: 100vh;
-            overflow-x: hidden;
-            background-image:
-                radial-gradient(at 0% 0%, rgba(77, 93, 251, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(0, 245, 255, 0.1) 0px, transparent 50%);
-            background-attachment: fixed;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 20px;
-            animation: fadeIn 0.8s ease-out;
-            position: relative;
-            z-index: 10;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 360px 1fr;
-            gap: 24px;
-        }
-
-        .card {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            transition: all 0.3s ease;
-        }
-
-        .card:hover {
-            border-color: var(--accent-primary);
-            box-shadow: 0 8px 32px 0 rgba(0, 245, 255, 0.1);
-        }
-
-        /* Sidebar Styles */
-        .profile-pic {
-            width: 100%;
-            height: auto;
-            border-radius: 40px;
-            border: 2px solid var(--accent-primary);
-            box-shadow: 0 0 30px var(--glow-color);
-            transform: rotate(-1deg);
-            transition: 0.5s;
-        }
-
-        .card:hover .profile-pic {
-            transform: rotate(0deg) scale(1.02);
-        }
-
-        h1 {
-            font-family: 'Outfit';
-            font-size: 2.2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff 0%, var(--accent-primary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-top: 20px;
-        }
-
-        .subtitle {
-            color: var(--accent-primary);
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 8px 0 24px;
-        }
-
-        .contact-info {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 14px;
-            text-decoration: none;
-            border: 1px solid transparent;
-            transition: 0.2s;
-            cursor: pointer;
-        }
-
-        .contact-item:hover {
-            background: rgba(0, 245, 255, 0.06);
-            border-color: var(--accent-primary);
-            color: #fff;
-        }
-
-        .copy-hint {
-            font-size: 0.7rem;
-            color: var(--accent-primary);
-            margin-left: auto;
-            opacity: 0;
-            transition: 0.3s;
-            font-weight: 800;
-        }
-
-        .copy-hint.show {
-            opacity: 1;
-        }
-
-        .lang-switcher {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-top: 15px;
-        }
-
-        .lang-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            color: var(--text-secondary);
-            padding: 8px 16px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-weight: 700;
-        }
-
-        .lang-btn.active {
-            background: var(--accent-primary);
-            color: #000;
-        }
-
-        /* Skill Matrix Styles */
-        .skills-container {
-            position: relative;
-            margin: 10px 0;
-            overflow: visible;
-        }
-
-        #skills-canvas {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            overflow: visible;
-        }
-
-        .skills-grid {
-            position: relative;
-            z-index: 2;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
-
-        .skill-tag {
-            min-height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            font-size: 0.85rem;
-            color: #fff;
-            transition: 0.3s;
-            cursor: pointer;
-        }
-
-        .skill-tag.trace-active {
-            border-color: #fff;
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-        }
-
-        .skill-tag.trace-target {
-            border-color: var(--accent-primary);
-            background: rgba(0, 245, 255, 0.1);
-            box-shadow: 0 0 15px rgba(0, 245, 255, 0.2);
-        }
-
-        .conn-glow {
-            fill: none;
-            stroke: var(--accent-primary);
-            stroke-width: 6;
-            filter: blur(3px);
-            opacity: 0.2;
-        }
-
-        .conn-core {
-            fill: none;
-            stroke: var(--accent-primary);
-            stroke-width: 1.5;
-            opacity: 0.8;
-        }
-
-        .conn-dash {
-            fill: none;
-            stroke: #fff;
-            stroke-width: 1;
-            stroke-dasharray: 5 5;
-            opacity: 0;
-        }
-
-        .conn-dash.alive {
-            opacity: 0.4;
-            animation: skillMarch 1s linear infinite;
-        }
-
-        @keyframes skillMarch {
-            from {
-                stroke-dashoffset: 20;
-            }
-
-            to {
-                stroke-dashoffset: 0;
-            }
-        }
-
-        .conn-photon {
-            fill: #fff;
-            filter: drop-shadow(0 0 5px #fff);
-        }
-
-        .conn-node {
-            fill: var(--accent-primary);
-        }
-
-        /* Exp Clusters Styles */
-        .exp-clusters {
-            display: grid;
-            gap: 18px;
-        }
-
-        .exp-cluster {
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.02);
-            overflow: hidden;
-            transition: 0.3s;
-        }
-
-        .exp-cluster.open {
-            border-color: var(--accent-primary);
-            background: rgba(255, 255, 255, 0.04);
-        }
-
-        .exp-cluster-head {
-            width: 100%;
-            border: 0;
-            background: transparent;
-            color: #fff;
-            text-align: left;
-            display: grid;
-            grid-template-columns: 130px 1fr auto;
-            gap: 12px;
-            align-items: center;
-            padding: 18px 20px;
-            cursor: pointer;
-        }
-
-        .exp-cluster-kicker {
-            color: var(--accent-primary);
-            font-size: 0.7rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-        }
-
-        .exp-cluster-title {
-            font-size: 1rem;
-            font-weight: 700;
-        }
-
-        .exp-cluster-toggle {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-        }
-
-        .exp-cluster-body {
-            max-height: 0;
-            overflow: hidden;
-            opacity: 0;
-            transition: 0.4s ease;
-            padding: 0 20px;
-        }
-
-        .exp-cluster.open .exp-cluster-body {
-            max-height: 1000px;
-            opacity: 1;
-            padding-bottom: 20px;
-        }
-
-        .exp-line {
-            padding: 14px;
-            border-radius: 14px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid transparent;
-            transition: 0.2s;
-            margin-top: 10px;
-        }
-
-        .exp-line.trace-active {
-            border-color: var(--accent-primary);
-            background: rgba(0, 245, 255, 0.05);
-        }
-
-        .exp-line strong {
-            display: block;
-            color: var(--accent-primary);
-            margin-bottom: 6px;
-        }
-
-        .exp-line p {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        /* Global Trace Styles */
-        #trace-overlay {
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 5;
-        }
-
-        .tconn-glow {
-            fill: none;
-            stroke: var(--accent-primary);
-            stroke-width: 6;
-            filter: blur(4px);
-            opacity: 0.15;
-        }
-
-        .tconn-core {
-            fill: none;
-            stroke: var(--accent-primary);
-            stroke-width: 2;
-            opacity: 0.7;
-        }
-
-        .tconn-dash {
-            fill: none;
-            stroke: #fff;
-            stroke-width: 1;
-            stroke-dasharray: 4 6;
-            opacity: 0;
-        }
-
-        .tconn-dash.alive {
-            opacity: 0.3;
-            animation: skillMarch 1s linear infinite;
-        }
-
-        .tconn-photon {
-            fill: #fff;
-            filter: drop-shadow(0 0 6px #fff);
-        }
-
-        /* Like Button Styles */
-        .like-button {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            border-radius: 18px;
-            padding: 14px;
-            cursor: pointer;
-            transition: 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .like-button.popping {
-            transform: scale(0.95);
-        }
-
-        .fly-heart {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff5ea8'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") no-repeat center/contain;
-            pointer-events: none;
-            animation: flyUp 1.8s ease-out forwards;
-        }
-
-        @keyframes flyUp {
-            0% {
-                opacity: 0;
-                transform: translateY(0) scale(0.5);
-            }
-
-            10% {
-                opacity: 1;
-            }
-
-            100% {
-                opacity: 0;
-                transform: translateY(-120px) translateX(var(--drift)) rotate(var(--rot2));
-            }
-        }
-
-        /* Stats Row */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .stat-card {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .stat-value {
-            font-family: 'Outfit';
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--accent-primary);
-        }
-
-        .stat-label {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            margin-top: 5px;
-        }
-
-        h2::before {
-            content: '';
-            width: 4px;
-            height: 18px;
-            background: var(--accent-primary);
-            display: inline-block;
-            margin-right: 12px;
-            vertical-align: middle;
-            box-shadow: 0 0 10px var(--accent-primary);
-        }
-
-        h2 {
-            font-family: 'Outfit';
-            font-size: 1.1rem;
-            color: #fff;
-            letter-spacing: 2px;
-            margin-bottom: 24px;
-        }
-
-        /* Project Cards & Zoom */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .project-card {
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.02);
-            transition: border-color 0.3s, box-shadow 0.3s;
-            position: relative;
-        }
-
-        .project-card:hover {
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 20px rgba(0, 245, 255, 0.1);
-            z-index: 100;
-        }
-
-        .project-img-wrapper {
-            width: 100%;
-            height: 180px;
-            border-top-left-radius: 16px;
-            border-top-right-radius: 16px;
-            position: relative;
-        }
-
-        .project-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-top-left-radius: 16px;
-            border-top-right-radius: 16px;
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s, border-radius 0.4s;
-            position: relative;
-            z-index: 10;
-        }
-
-        .project-card:nth-child(1) .project-img {
-            transform-origin: top left;
-        }
-
-        .project-card:nth-child(2) .project-img {
-            transform-origin: top right;
-        }
-
-        .project-card:nth-child(3) .project-img {
-            transform-origin: center left;
-        }
-
-        .project-card:nth-child(4) .project-img {
-            transform-origin: center right;
-        }
-
-        .project-card:nth-child(5) .project-img {
-            transform-origin: bottom left;
-        }
-
-        .project-card:nth-child(6) .project-img {
-            transform-origin: bottom right;
-        }
-
-        .placeholder-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: repeating-linear-gradient(45deg, rgba(0, 245, 255, 0.02), rgba(0, 245, 255, 0.02) 10px, rgba(0, 245, 255, 0.05) 10px, rgba(0, 245, 255, 0.05) 20px);
-            color: var(--accent-primary);
-            font-family: 'Outfit';
-            font-weight: 800;
-            letter-spacing: 2px;
-            font-size: 1.2rem;
-            border: 1px dashed rgba(0, 245, 255, 0.3);
-            text-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
-        }
-
-        .project-card:hover .project-img {
-            transform: scale(2.8);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9), 0 0 40px var(--glow-color);
-            border-radius: 12px;
-            z-index: 1000;
-        }
-
-        .project-content {
-            padding: 16px;
-        }
-
-        .project-title {
-            color: #fff;
-            font-size: 1.05rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .project-desc {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-
-        @media (max-width: 900px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-
-            #trace-overlay {
-                display: none;
-            }
-
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .project-card:nth-child(n) .project-img {
-                transform-origin: center center;
-            }
-
-            .project-card:hover .project-img {
-                transform: scale(1.08);
-            }
-        }
-
-        /* Audio Player */
-        .audio-player-card {
-            margin-top: 24px;
-            padding: 16px;
-            border: 1px solid var(--glass-border);
-        }
-
-        .audio-player {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .audio-controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .audio-btn {
-            background: var(--accent-primary);
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
-            transition: 0.3s;
-            color: #000;
-        }
-
-        .audio-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px var(--accent-primary);
-        }
-
-        .audio-info {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .audio-progress-container {
-            width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .audio-progress-bar {
-            height: 100%;
-            background: var(--accent-primary);
-            width: 0%;
-            border-radius: 2px;
-            box-shadow: 0 0 8px var(--accent-primary);
-        }
-
-        .audio-vol-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 4px;
-        }
-
-        .audio-slider {
-            -webkit-appearance: none;
-            flex-grow: 1;
-            height: 3px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-        }
-
-        .audio-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--accent-primary);
-            cursor: pointer;
-            box-shadow: 0 0 5px var(--accent-primary);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Юрий Андриенко — Резюме Геймдизайнера & Архитектора ИИ-агентов</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Realistic Neumorphic Dark Slate Palette */
+      --bg-base: #14171d;
+      --bg-surface: #1b1f27;
+      --card-start: #232833;
+      --card-end: #1a1e26;
+      --well-bg: #111318;
+      --well-dark: #0d0f13;
+      
+      --text-white: #f8fafc;
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      /* Tactile Accents */
+      --accent-amber: #ff9f43;
+      --accent-coral: #ff5252;
+      --accent-gold: #f59e0b;
+      --accent-emerald: #10b981;
+      --accent-cyan: #38bdf8;
+      
+      /* Directional Bevels */
+      --bevel-top: rgba(255, 255, 255, 0.12);
+      --bevel-left: rgba(255, 255, 255, 0.08);
+      --bevel-bottom: rgba(0, 0, 0, 0.65);
+      --bevel-right: rgba(0, 0, 0, 0.45);
+      
+      /* Inset Well Borders */
+      --well-top: rgba(0, 0, 0, 0.7);
+      --well-left: rgba(0, 0, 0, 0.5);
+      --well-bottom: rgba(255, 255, 255, 0.08);
+      --well-right: rgba(255, 255, 255, 0.05);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-base);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14.5px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 36px 20px 80px 20px;
+    }
+
+    /* Primitives */
+    .neu-card {
+      background: linear-gradient(155deg, var(--card-start) 0%, var(--card-end) 100%);
+      border-radius: 14px;
+      border-top: 1px solid var(--bevel-top);
+      border-left: 1px solid var(--bevel-left);
+      border-bottom: 1px solid var(--bevel-bottom);
+      border-right: 1px solid var(--bevel-right);
+      box-shadow: 0 10px 24px -6px rgba(0, 0, 0, 0.5);
+      transition: border-color 0.25s, transform 0.25s;
+    }
+
+    .neu-well {
+      background: var(--well-bg);
+      border-radius: 10px;
+      border-top: 1px solid var(--well-top);
+      border-left: 1px solid var(--well-left);
+      border-bottom: 1px solid var(--well-bottom);
+      border-right: 1px solid var(--well-right);
+    }
+
+    .neu-btn {
+      background: linear-gradient(155deg, #2c3340 0%, #1a1e26 100%);
+      border-radius: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.18);
+      border-left: 1px solid rgba(255, 255, 255, 0.10);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.65);
+      border-right: 1px solid rgba(0, 0, 0, 0.45);
+      color: var(--text-white);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 15px;
+      font-size: 13px;
+      font-weight: 700;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .neu-btn:hover {
+      color: var(--accent-amber);
+      border-top-color: var(--accent-amber);
+      transform: translateY(-1px);
+    }
+
+    .neu-tag {
+      background: var(--well-dark);
+      border-radius: 14px;
+      padding: 3px 10px;
+      font-size: 11.5px;
+      font-weight: 700;
+      border-top: 1px solid rgba(0,0,0,0.6);
+      border-bottom: 1px solid rgba(255,255,255,0.09);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+    .tag-emerald { color: var(--accent-emerald); }
+    .tag-amber { color: var(--accent-amber); }
+    .tag-coral { color: var(--accent-coral); }
+    .tag-cyan { color: var(--accent-cyan); }
+
+    /* Section Titles */
+    .sec-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-white);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 32px 0 16px 0;
+    }
+    .sec-title-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--accent-amber);
+      box-shadow: 0 0 8px var(--accent-amber);
+      display: inline-block;
+    }
+    .sec-title-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255, 159, 67, 0.4), rgba(255, 255, 255, 0.06), transparent);
+    }
+
+    /* Top Sticky Action Bar */
+    .top-action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(20, 23, 29, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .top-bar-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--text-white);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .top-bar-links {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* Hero Header */
+    .hero-top {
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: 22px;
+      align-items: stretch;
+      margin-bottom: 12px;
+    }
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .header h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 34px;
+      font-weight: 900;
+      color: var(--text-white);
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+    }
+    .header .role {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--accent-amber);
+      letter-spacing: 0.4px;
+      margin-top: 4px;
+    }
+    .contacts-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      margin-top: 8px;
+      font-size: 13.5px;
+      color: var(--text-muted);
+    }
+    .contacts-bar a {
+      color: var(--text-white);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .contacts-bar a:hover {
+      color: var(--accent-amber);
+    }
+
+    /* Photo Frame */
+    .photo-frame-large {
+      width: 220px;
+      min-height: 250px;
+      border-radius: 14px;
+      overflow: hidden;
+      flex-shrink: 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      border-left: 1px solid rgba(255, 255, 255, 0.12);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.7);
+      border-right: 1px solid rgba(0, 0, 0, 0.5);
+      background: var(--well-dark);
+      position: relative;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.6);
+    }
+    .photo-frame-large img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+      display: block;
+    }
+
+    /* HR Matrix */
+    .hr-matrix {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      padding: 12px 16px;
+    }
+    .matrix-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .matrix-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent-amber);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 4px;
+    }
+    .matrix-val {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-white);
+      line-height: 1.35;
+    }
+
+    /* Profile block */
+    .profile-block {
+      padding: 14px 18px;
+      font-size: 14px;
+      color: var(--text-main);
+      line-height: 1.55;
+    }
+    .profile-block strong {
+      color: var(--text-white);
+    }
+
+    /* Audio resume player */
+    .audio-player-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 16px;
+      background: linear-gradient(155deg, #242934 0%, #171a22 100%);
+      border-radius: 12px;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      border-bottom: 1px solid rgba(0,0,0,0.6);
+    }
+    .audio-play-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--accent-amber);
+      color: #000;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .audio-play-btn:hover {
+      transform: scale(1.06);
+      background: #ffb168;
+    }
+
+    /* Competencies 4-col */
+    .comp-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .comp-cell {
+      padding: 14px 16px;
+    }
+    .comp-cell h4 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--accent-amber);
+      margin-bottom: 6px;
+    }
+    .comp-cell p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Flagship Projects Cards (EXPANDED by default) */
+    .flagship-card {
+      padding: 20px;
+      margin-bottom: 24px;
+      display: grid;
+      grid-template-columns: 460px 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    /* Interactive Video Container with Rich Poster & Play Overlay */
+    .video-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--well-dark);
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      border-left: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.7);
+      border-right: 1px solid rgba(0, 0, 0, 0.4);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    }
+    .video-poster {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .video-poster::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(14, 17, 23, 0.45);
+      transition: background 0.25s;
+    }
+    .video-poster:hover::before {
+      background: rgba(14, 17, 23, 0.25);
+    }
+    .play-overlay-btn {
+      position: relative;
+      z-index: 2;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(255, 82, 82, 0.9);
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      padding-left: 4px;
+      box-shadow: 0 0 25px rgba(255, 82, 82, 0.7);
+      transition: transform 0.2s, background 0.2s;
+    }
+    .video-poster:hover .play-overlay-btn {
+      transform: scale(1.12);
+      background: #ff5252;
+      box-shadow: 0 0 35px rgba(255, 82, 82, 0.9);
+    }
+    .poster-label {
+      position: relative;
+      z-index: 2;
+      margin-top: 10px;
+      background: rgba(17, 19, 25, 0.9);
+      color: var(--text-white);
+      padding: 4px 14px;
+      border-radius: 14px;
+      font-size: 12.5px;
+      font-weight: 700;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      letter-spacing: 0.4px;
+    }
+    .video-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+    .video-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .flagship-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .flagship-header h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-white);
+    }
+    .flagship-meta {
+      font-size: 13.5px;
+      color: var(--accent-amber);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    .flagship-list {
+      list-style: none;
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+    .flagship-list li {
+      position: relative;
+      padding-left: 14px;
+      margin-bottom: 8px;
+    }
+    .flagship-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--accent-amber);
+      font-weight: 900;
+      font-size: 15px;
+    }
+    .flagship-list strong {
+      color: var(--text-white);
+    }
+
+    /* 3D Stand Showcase Card */
+    .stand-showcase-box {
+      padding: 22px;
+      margin-bottom: 24px;
+      border-top-color: rgba(255, 159, 67, 0.35);
+    }
+    .stand-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .stand-title h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-white);
+    }
+    .stand-title .subtitle {
+      font-size: 13.5px;
+      color: var(--accent-amber);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    
+    .stand-grid-layout {
+      display: grid;
+      grid-template-columns: 460px 1fr;
+      gap: 22px;
+      align-items: start;
+      margin-bottom: 18px;
+    }
+
+    .stand-gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stand-img-card {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.6);
+      background: var(--well-dark);
+      cursor: zoom-in;
+      transition: transform 0.2s;
+    }
+    .stand-img-card:hover {
+      transform: translateY(-2px);
+    }
+    .stand-img-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      display: block;
+    }
+    .stand-img-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(17, 19, 25, 0.94);
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-white);
+      text-align: center;
+      padding: 4px 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .stand-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .stand-feat-col {
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.48;
+    }
+    .stand-feat-col strong {
+      color: var(--accent-amber);
+      display: block;
+      margin-bottom: 4px;
+      font-size: 13.5px;
+    }
+
+    /* Mocap & WalkMan AI 2-Col */
+    .hardware-row {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .hardware-card {
+      padding: 18px 20px;
+    }
+    .walkman-box {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    .walkman-photo-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .walkman-img-wrap {
+      width: 140px;
+      height: 140px;
+      border-radius: 10px;
+      overflow: hidden;
+      border-top: 1px solid rgba(255, 255, 255, 0.18);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.7);
+      background: #000;
+      cursor: zoom-in;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+    }
+    .walkman-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s;
+    }
+    .walkman-img-wrap:hover img {
+      transform: scale(1.05);
+    }
+
+    /* 3D Workflow Gallery */
+    .gallery-box {
+      padding: 18px 20px;
+      margin-bottom: 24px;
+    }
+    .gallery-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .gallery-head span {
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--accent-amber);
+    }
+    .gallery-head small {
+      font-size: 12.5px;
+      color: var(--text-dim);
+    }
+    .gallery-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .gallery-item {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.6);
+      background: var(--well-dark);
+      cursor: zoom-in;
+      transition: transform 0.2s;
+    }
+    .gallery-item:hover {
+      transform: translateY(-2px);
+    }
+    .gallery-item img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      display: block;
+    }
+    .gallery-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(17, 19, 25, 0.94);
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-white);
+      text-align: center;
+      padding: 4px 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Projects 2x2 Grid (Fully Expanded) */
+    .grid-2x2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .proj-card {
+      padding: 16px 20px;
+    }
+    .proj-card h4 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text-white);
+      margin-bottom: 2px;
+    }
+    .proj-card .subtitle {
+      font-size: 12.5px;
+      color: var(--accent-amber);
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .proj-card ul {
+      list-style: none;
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .proj-card ul li {
+      position: relative;
+      padding-left: 14px;
+      margin-bottom: 6px;
+    }
+    .proj-card ul li::before {
+      content: "–";
+      position: absolute;
+      left: 0;
+      color: var(--accent-amber);
+      font-weight: 700;
+    }
+    .proj-card strong {
+      color: var(--text-white);
+    }
+
+    /* Stack 3-col */
+    .stack-3col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .stack-cell {
+      padding: 12px 16px;
+    }
+    .stack-cell h5 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-amber);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .stack-cell p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Dual Background Box */
+    .bg-dual {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 16px 20px;
+      margin-bottom: 32px;
+    }
+    .bg-dual h5 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--accent-amber);
+      margin-bottom: 4px;
+    }
+    .bg-dual p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .bg-dual strong {
+      color: var(--text-white);
+    }
+
+    /* Footer */
+    .footer-bar {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+
+    /* Lightbox Modal */
+    .lightbox-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(8, 10, 14, 0.94);
+      backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      cursor: zoom-out;
+    }
+    .lightbox-modal.active {
+      display: flex;
+    }
+    .lightbox-modal img {
+      max-width: 95vw;
+      max-height: 90vh;
+      border-radius: 10px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.8);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .lightbox-caption {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(20,23,29,0.9);
+      color: var(--text-white);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 960px) {
+      .hero-top {
+        grid-template-columns: 1fr;
+      }
+      .photo-frame-large {
+        width: 100%;
+        height: 280px;
+      }
+      .flagship-card {
+        grid-template-columns: 1fr;
+      }
+      .stand-grid-layout {
+        grid-template-columns: 1fr;
+      }
+      .hardware-row {
+        grid-template-columns: 1fr;
+      }
+      .comp-row {
+        grid-template-columns: 1fr 1fr;
+      }
+      .grid-2x2 {
+        grid-template-columns: 1fr;
+      }
+      .stack-3col {
+        grid-template-columns: 1fr;
+      }
+      .bg-dual {
+        grid-template-columns: 1fr;
+      }
+      .stand-gallery {
+        grid-template-columns: 1fr;
+      }
+      .gallery-strip {
+        grid-template-columns: 1fr 1fr;
+      }
+      .hr-matrix {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 600px) {
+      .comp-row {
+        grid-template-columns: 1fr;
+      }
+      .gallery-strip {
+        grid-template-columns: 1fr;
+      }
+      .hr-matrix {
+        grid-template-columns: 1fr;
+      }
+      .header h1 {
+        font-size: 26px;
+      }
+      .walkman-box {
+        grid-template-columns: 1fr;
+      }
+      .walkman-img-wrap {
+        width: 100%;
+        height: 220px;
+      }
+    }
+  </style>
 </head>
-
 <body>
-    <svg id="trace-overlay"></svg>
-    <div class="container">
-        <div class="dashboard-grid">
-            <aside class="sidebar">
-                <header class="card">
-                    <video src="assets/avatar.mp4" class="profile-pic" autoplay loop muted playsinline></video>
-                    <h1 id="name">YUKI LEE</h1>
-                    <p class="subtitle" data-i18n="subtitle">Vibe Coder / AI Systems Builder</p>
-                    <div class="contact-info">
-                        <div class="contact-item" id="email-contact">
-                            <i data-lucide="mail"></i>
-                            <span>yukiprofoto@gmail.com</span>
-                            <span class="copy-hint" id="copy-hint">COPIED</span>
-                        </div>
-                        <div class="contact-item">
-                            <i data-lucide="map-pin"></i>
-                            <span data-i18n="location">Remote · China / Europe</span>
-                        </div>
-                    </div>
-                    <div class="lang-switcher">
-                        <button class="lang-btn" onclick="switchLanguage('ru')" id="btn-ru">RU</button>
-                        <button class="lang-btn" onclick="switchLanguage('en')" id="btn-en">EN</button>
-                        <button class="lang-btn" onclick="switchLanguage('zh')" id="btn-zh">ZH</button>
-                    </div>
-                </header>
 
-                <div class="card audio-player-card">
-                    <h2 data-i18n="audiotitle" style="margin-bottom:16px; font-size:0.9rem;">AUDIO RESUME</h2>
-                    <div class="audio-player">
-                        <audio id="resume-audio" src="assets/RESUME.MP3"></audio>
-                        <div class="audio-controls">
-                            <button class="audio-btn" id="audio-play-pause">
-                                <i data-lucide="play" id="audio-icon" style="width:20px; height:20px;"></i>
-                            </button>
-                            <div class="audio-info">
-                                <div class="audio-progress-container" id="audio-progress-container">
-                                    <div class="audio-progress-bar" id="audio-progress"></div>
-                                </div>
-                                <div class="audio-vol-row">
-                                    <i data-lucide="volume-2" style="width:14px; color:var(--text-secondary);"></i>
-                                    <input type="range" id="audio-volume" min="0" max="1" step="0.05" value="0.7"
-                                        class="audio-slider">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  <!-- Sticky Top Quick Navigation & PDF Download -->
+  <div class="top-action-bar">
+    <div class="top-bar-title">
+      <span class="sec-title-dot"></span>
+      <span>Юрий Андриенко · Портфолио & Резюме</span>
+    </div>
+    <div class="top-bar-links">
+      <a class="neu-btn" href="RESUME_GAMEDEV_YURI_ANDRIENKO.pdf" download style="color: var(--accent-amber);">
+        📥 Скачать PDF (A4)
+      </a>
+      <a class="neu-btn" href="https://t.me/Cyberhumans" target="_blank">
+        ✈️ Telegram @Cyberhumans
+      </a>
+      <a class="neu-btn" href="mailto:yukiprofoto@gmail.com">
+        ✉️ Email
+      </a>
+    </div>
+  </div>
 
-                <div class="card" style="margin-top:24px;">
-                    <h2 data-i18n="skillstitle">Skills & Tech</h2>
-                    <div class="skills-container">
-                        <svg id="skills-canvas"></svg>
-                        <div class="skills-grid">
-                            <div class="skill-tag" data-skill="orch" data-i18n="skill1">ИИ Оркестрация</div>
-                            <div class="skill-tag" data-skill="llm" data-i18n="skill2">LLM / RAG</div>
-                            <div class="skill-tag" data-skill="avatar" data-i18n="skill7">3D Avatars</div>
-                            <div class="skill-tag" data-skill="mocap" data-i18n="skill8">Motion Capture</div>
-                            <div class="skill-tag" data-skill="realtime" data-i18n="skill9">Real-time AI</div>
-                            <div class="skill-tag" data-skill="nodes" data-i18n="skill3">Нодовые Системы</div>
-                            <div class="skill-tag" data-skill="unreal" data-i18n="skill4">Unreal Engine</div>
-                            <div class="skill-tag" data-skill="fintech" data-i18n="skill5">FinTech</div>
-                            <div class="skill-tag" data-skill="auto" data-i18n="skill6">Автоматизация</div>
-                            <div class="skill-tag" data-skill="python">Python AI</div>
-                            <div class="skill-tag" data-skill="reverse">Reverse Eng.</div>
-                            <div class="skill-tag" data-skill="motion">3D Motion</div>
-                        </div>
-                    </div>
-                </div>
+  <div class="container">
 
-                <div class="card" style="margin-top:24px; padding:12px;">
-                    <button class="like-button" id="like-button">
-                        <div class="like-heart-icon"><i data-lucide="heart" style="fill:#ff5ea8"></i></div>
-                        <div style="text-align:left">
-                            <strong id="like-count"
-                                style="display:block; font-family:'Outfit'; font-size:1.3rem; color:#fff;">0</strong>
-                            <span
-                                style="font-size:0.6rem; color:var(--text-secondary); text-transform:uppercase;">Infinite
-                                Matrix Likes</span>
-                        </div>
-                        <div id="like-fountain" style="position:absolute; inset:0; pointer-events:none;"></div>
-                    </button>
-                </div>
-            </aside>
-
-            <main class="main-content">
-                <div class="stats-row">
-                    <div class="card stat-card">
-                        <div class="stat-value">10+</div>
-                        <div class="stat-label" data-i18n="statsproducts">Products</div>
-                    </div>
-                    <div class="card stat-card">
-                        <div class="stat-value">50+</div>
-                        <div class="stat-label" data-i18n="statsapi">API Integrated</div>
-                    </div>
-                    <div class="card stat-card">
-                        <div class="stat-value">3D</div>
-                        <div class="stat-label" data-i18n="statsspatial">Spatial Eng</div>
-                    </div>
-                    <div class="card stat-card">
-                        <div class="stat-value">∞</div>
-                        <div class="stat-label" data-i18n="statsvibe">Vibe Factor</div>
-                    </div>
-                </div>
-
-                <section class="card">
-                    <h2 data-i18n="abouttitle">ABOUT ME</h2>
-                    <p style="font-size:1rem; line-height:1.7; color:var(--text-secondary);" data-i18n="about1">Я создаю
-                        визуальные оркестраторы...</p>
-                    <p style="font-size:0.95rem; line-height:1.7; color:var(--text-secondary); margin-top:15px;"
-                        data-i18n="about2">За последний год разработал более 10...</p>
-                </section>
-
-                <section class="card" style="margin-top:24px;">
-                    <h2 data-i18n="exptitle">WORK EXPERIENCE</h2>
-                    <div class="exp-clusters">
-                        <article class="exp-cluster">
-                            <button class="exp-cluster-head">
-                                <span class="exp-cluster-kicker">AI SYSTEMS</span>
-                                <span class="exp-cluster-title">Orchestration & Logic</span>
-                                <span class="exp-cluster-toggle">OPEN</span>
-                            </button>
-                            <div class="exp-cluster-body">
-                                <div class="exp-line" data-trace-from="lazy-ide"><strong>Lazy IDE Coder</strong>
-                                    <p data-i18n="expdesc1">Мультиагентный оркестратор...</p>
-                                </div>
-                                <div class="exp-line" data-trace-from="dialogue"><strong
-                                        data-i18n="expdesc2title">Dialogue Auto-responder</strong>
-                                    <p data-i18n="expdesc2">Система с долгосрочной памятью...</p>
-                                </div>
-                                <div class="exp-line" data-trace-from="rag-bot"><strong
-                                        data-i18n="expdesc4title">RAG-bot (Psychotherapist)</strong>
-                                    <p data-i18n="expdesc4">Специализированная система...</p>
-                                </div>
-                            </div>
-                        </article>
-                        <article class="exp-cluster">
-                            <button class="exp-cluster-head">
-                                <span class="exp-cluster-kicker">FINTECH</span>
-                                <span class="exp-cluster-title">Routing & Markets</span>
-                                <span class="exp-cluster-toggle">OPEN</span>
-                            </button>
-                            <div class="exp-cluster-body">
-                                <div class="exp-line" data-trace-from="paynode"><strong>PayNode Router</strong>
-                                    <p data-i18n="expdesc3">FinTech-калькулятор маршрутизации...</p>
-                                </div>
-                                <div class="exp-line" data-trace-from="market-app"><strong>Android Marketplace</strong>
-                                    <p data-i18n="expdesc5">Android-маркетплейс с интеграцией...</p>
-                                </div>
-                            </div>
-                        </article>
-                        <article class="exp-cluster">
-                            <button class="exp-cluster-head">
-                                <span class="exp-cluster-kicker">3D / SPATIAL</span>
-                                <span class="exp-cluster-title">Unreal & Tracking</span>
-                                <span class="exp-cluster-toggle">OPEN</span>
-                            </button>
-                            <div class="exp-cluster-body">
-                                <div class="exp-line" data-trace-from="social-3d"><strong>3D Social Platform</strong>
-                                    <p data-i18n="expdesc6">Проектирую 3D-визуальную социальную платформу...</p>
-                                </div>
-                                <div class="exp-line" data-trace-from="unreal-env"><strong>Unreal Engine
-                                        Systems</strong>
-                                    <p data-i18n="expdesc7">Разработка в Unreal Engine...</p>
-                                </div>
-                                <div class="exp-line" data-trace-from="motion-pipeline"><strong>Motion Tracking
-                                        Pipeline</strong>
-                                    <p data-i18n="expdesc8">Настройка с нуля до живой трансляции...</p>
-                                </div>
-                            </div>
-                        </article>
-                        <article class="exp-cluster">
-                            <button class="exp-cluster-head">
-                                <span class="exp-cluster-kicker">DSP / AUDIO</span>
-                                <span class="exp-cluster-title">MIDI & Analysis</span>
-                                <span class="exp-cluster-toggle">OPEN</span>
-                            </button>
-                            <div class="exp-cluster-body">
-                                <div class="exp-line" data-trace-from="dsp-midi"><strong>MIDI Audio Engines</strong>
-                                    <p data-i18n="expdesc9">Разработал MIDI-архитектуру...</p>
-                                </div>
-                                <div class="exp-line" data-trace-from="dsp-web"><strong>Browser Audio Systems</strong>
-                                    <p data-i18n="expdesc10">Создал высокопроизводительные браузерные генераторы...</p>
-                                </div>
-                                <div class="exp-line" data-trace-from="reverse-eng"><strong>Reverse Engineering</strong>
-                                    <p data-i18n="expdesc11">Прошел путь от реверс-инжиниринга...</p>
-                                </div>
-                            </div>
-                        </article>
-                    </div>
-                </section>
-
-                <section class="card" style="margin-top:24px;">
-                    <h2 data-i18n="projectstitle">PROJECTS</h2>
-                    <div class="projects-grid">
-                        <div class="project-card">
-                            <div class="project-img-wrapper">
-                                <img src="assets/image_1_0.jpeg" alt="AI Agent Orchestrator" class="project-img">
-                            </div>
-                            <div class="project-content">
-                                <div class="project-title" data-i18n="projtitle1">AI Agent Orchestrator</div>
-                                <div class="project-desc" data-i18n="projdesc1">Визуальный интерфейс для управления
-                                    группой автономных ИИ-агентов.</div>
-                            </div>
-                        </div>
-                        <div class="project-card">
-                            <div class="project-img-wrapper">
-                                <img src="assets/image_1_1.jpeg" alt="Spectrum Analyser" class="project-img">
-                            </div>
-                            <div class="project-content">
-                                <div class="project-title" data-i18n="projtitle2">Spectrum Analyser</div>
-                                <div class="project-desc" data-i18n="projdesc2">Визуализация частот в реальном времени.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="project-card">
-                            <div class="project-img-wrapper">
-                                <img src="assets/image_1_2.jpeg" alt="MIDI Generator" class="project-img">
-                            </div>
-                            <div class="project-content">
-                                <div class="project-title" data-i18n="projtitle3">MIDI Generator</div>
-                                <div class="project-desc" data-i18n="projdesc3">Генератор музыкальных паттернов со
-                                    сложной логикой вычислений.</div>
-                            </div>
-                        </div>
-                        <div class="project-card">
-                            <div class="project-img-wrapper">
-                                <img src="assets/image_1_3.jpeg" alt="3D Audio Analyser" class="project-img">
-                            </div>
-                            <div class="project-content">
-                                <div class="project-title" data-i18n="projtitle4">3D Audio Analyser</div>
-                                <div class="project-desc" data-i18n="projdesc4">Трехмерная визуализация звука и
-                                    спектральных данных в веб-браузере.</div>
-                            </div>
-                        </div>
-                        <div class="project-card">
-                            <div class="project-img-wrapper">
-                                <div class="project-img placeholder-box">COMING SOON</div>
-                            </div>
-                            <div class="project-content">
-                                <div class="project-title" data-i18n="projtitle5">3D Motion Capture</div>
-                                <div class="project-desc" data-i18n="projdesc5">Захват движений всего тела на базе
-                                    Unreal Engine для виртуальных миров.</div>
-                            </div>
-                        </div>
-                        <div class="project-card">
-                            <div class="project-img-wrapper">
-                                <div class="project-img placeholder-box">COMING SOON</div>
-                            </div>
-                            <div class="project-content">
-                                <div class="project-title" data-i18n="projtitle6">FinTech App / Router</div>
-                                <div class="project-desc" data-i18n="projdesc6">Агрегатор платежных путей и калькулятор
-                                    комиссионных маршрутов.</div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </main>
+    <!-- ================= HERO TOP ================= -->
+    <div class="hero-top">
+      <div class="hero-left">
+        <div class="header">
+          <h1>ЮРИЙ АНДРИЕНКО</h1>
+          <div class="role">ГЕЙМДИЗАЙНЕР / СИСТЕМНЫЙ И ТЕХНИЧЕСКИЙ GD / ОРКЕСТРАТОР ИИ-АГЕНТОВ</div>
+          <div class="contacts-bar">
+            <span>✈️ Telegram: <a href="https://t.me/Cyberhumans" target="_blank">@Cyberhumans</a></span>
+            <span>✉️ Email: <a href="mailto:yukiprofoto@gmail.com">yukiprofoto@gmail.com</a></span>
+            <span>📍 Удаленно / Релокация</span>
+            <span>🐙 GitHub: <a href="https://github.com/etofot" target="_blank">github.com/etofot</a></span>
+          </div>
         </div>
+
+        <!-- Audio Resume Bar -->
+        <div class="audio-player-card">
+          <button class="audio-play-btn" id="audioToggleBtn" title="Слушать аудио-резюме">▶</button>
+          <div style="flex: 1;">
+            <div style="font-size: 13px; font-weight: 700; color: var(--text-white);">Аудио-резюме кандидата</div>
+            <div style="font-size: 11.5px; color: var(--text-muted);" id="audioStatusText">Нажмите play для воспроизведения голоса автора</div>
+          </div>
+          <audio id="resumeAudio" src="assets/RESUME.MP3" preload="metadata"></audio>
+        </div>
+
+        <!-- HR Snapshot Matrix (Recessed Socket) -->
+        <div class="neu-well hr-matrix">
+          <div class="matrix-item">
+            <span class="matrix-label">Жанры</span>
+            <span class="matrix-val">Arcade/Sim Гонки, PvP Раннеры, RTS, Слэшеры, Match-3</span>
+          </div>
+          <div class="matrix-item">
+            <span class="matrix-label">Движки & Рендер</span>
+            <span class="matrix-val">Godot 4, Three.js / WebGL, R3F, Unreal Engine 5</span>
+          </div>
+          <div class="matrix-item">
+            <span class="matrix-label">Физика & Системы</span>
+            <span class="matrix-val">Rapier3D, Matter.js, NavMesh, A*, FSM, Экономика</span>
+          </div>
+          <div class="matrix-item">
+            <span class="matrix-label">Mocap & Риггинг</span>
+            <span class="matrix-val">Rokoko Smartsuit + Smartgloves, 80 костей Face Rig</span>
+          </div>
+        </div>
+
+        <!-- Profile Statement (Fully Expanded) -->
+        <div class="neu-well profile-block">
+          Системный и технический геймдизайнер с фокусом на <strong>игровой физике, математическом балансе, динамике управления (Game Feel) и анимационном продакшене</strong>. Проектирую механики с нуля: от формул прогрессии и экономических циклов до физических контроллеров и играбельных прототипов. Превращаю рутину в динамичный геймплей с осознанным выбором для игрока («простые в освоении правила с высокой вариативностью и прозрачной ценой ошибки»). Создаю удобные приложения, помогающие разработке и ускорению создания ассетов или анализа, настройки параметров персонажей и любые другие.
+        </div>
+      </div>
+
+      <!-- Photo Frame -->
+      <div class="photo-frame-large" title="Юрий Андриенко">
+        <img src="assets/photo_yuri.jpg" alt="Юрий Андриенко">
+      </div>
     </div>
 
-    <script id="trace-layer"></script>
-    <script>
-        lucide.createIcons();
+    <!-- ================= COMPETENCIES ================= -->
+    <div class="sec-title">
+      <span class="sec-title-dot"></span>
+      <span>Ключевые компетенции</span>
+      <span class="sec-title-line"></span>
+    </div>
+    <div class="comp-row">
+      <div class="neu-card comp-cell">
+        <h4>Системный баланс</h4>
+        <p>Расчет внутриигровой экономики (inflows/sinks/pacing), комбо-множители, формулы кривых сложности.</p>
+      </div>
+      <div class="neu-card comp-cell">
+        <h4>Game Feel & Физика</h4>
+        <p>Vehicle-контроллеры, аркадный дрифт, прыжки, импульсы, отзывчивость управления, импакт.</p>
+      </div>
+      <div class="neu-card comp-cell">
+        <h4>Технический GD</h4>
+        <p>Декомпозиция задач, проектирование FSM, риггинг, коллизии, пайплайны Blender → Engine.</p>
+      </div>
+      <div class="neu-card comp-cell">
+        <h4>AI & Логика поведения</h4>
+        <p>Многорежимные боты, роевой интеллект (swarming), точки интереса (POI), поиск путей (A*, NavMesh).</p>
+      </div>
+    </div>
 
-        document.getElementById('email-contact').addEventListener('click', function () {
-            navigator.clipboard.writeText('yukiprofoto@gmail.com').then(() => {
-                const hint = document.getElementById('copy-hint');
-                hint.classList.add('show');
-                setTimeout(() => hint.classList.remove('show'), 2000);
-            });
-        });
+    <!-- ================= FLAGSHIP PROJECTS WITH VIDEO ================= -->
+    <div class="sec-title">
+      <span class="sec-title-dot"></span>
+      <span>Флагманские проекты с видео-демонстрацией</span>
+      <span class="sec-title-line"></span>
+    </div>
 
-        // Toggle Clusters
-        document.querySelectorAll('.exp-cluster-head').forEach(head => {
-            head.addEventListener('click', () => {
-                const cluster = head.parentElement;
-                cluster.classList.toggle('open');
-                head.querySelector('.exp-cluster-toggle').innerText = cluster.classList.contains('open') ? 'CLOSE' : 'OPEN';
-            });
-        });
+    <!-- 1. RunboyZ -->
+    <div class="neu-card flagship-card">
+      <div>
+        <div class="video-container" id="video-runboyz">
+          <div class="video-poster" style="background-image: url('assets/runboyz.png');" onclick="playEmbeddedVideo('video-runboyz', 'jOGHQQgdn4g')">
+            <button class="play-overlay-btn" title="Воспроизвести видео">▶</button>
+            <div class="poster-label">▶ Смотреть видео геймплея</div>
+          </div>
+        </div>
+        <div class="video-actions">
+          <span style="font-size: 12px; color: var(--text-dim);">Кликните на обложку для запуска плеера</span>
+          <a class="neu-btn" href="https://youtu.be/jOGHQQgdn4g" target="_blank" style="font-size: 11.5px; padding: 4px 10px;">
+            Открыть на YouTube ↗
+          </a>
+        </div>
+      </div>
+      <div>
+        <div class="flagship-header">
+          <h3>RunboyZ («СТОЛБЫ» / Duel of Pillars)</h3>
+          <span class="neu-tag tag-emerald">Multiplayer WebGL</span>
+        </div>
+        <div class="flagship-meta">Соревновательный 3D экшен-раннер со строительством лабиринта · React 19 / Three.js / Node.js</div>
+        <ul class="flagship-list">
+          <li><strong>Динамический терраморфинг арены 100×400:</strong> возведение и разрушение столбов на ходу (3 материала, до 4 ступеней высоты) для тактического контроля дистанции.</li>
+          <li><strong>Механика «транса» вместо выбывания:</strong> критический урон вызывает оглушение с глитч-эффектом и потерей управления, сохраняя плотность дуэли без перманентной смерти.</li>
+          <li><strong>Многорежимный ИИ (A*):</strong> бот с переключением между штурмом базы (hunt-base), сносом преград игрока (break-wall) и расстановкой ловушек; клиентская логика «Local Blindness».</li>
+          <li><strong>Сетевой рендер:</strong> отрисовка тысяч динамических столбов сетки через InstancedMesh с точечным обновлением матриц без просадки FPS.</li>
+        </ul>
+      </div>
+    </div>
 
-        // Audio Player Logic
-        const audio = document.getElementById('resume-audio');
-        const playBtn = document.getElementById('audio-play-pause');
-        const audioIcon = document.getElementById('audio-icon');
-        const progress = document.getElementById('audio-progress');
-        const progressCont = document.getElementById('audio-progress-container');
-        const volume = document.getElementById('audio-volume');
+    <!-- 2. Roadster-X -->
+    <div class="neu-card flagship-card">
+      <div>
+        <div class="video-container" id="video-roadster">
+          <div class="video-poster" style="background-image: url('assets/roadster_x.jpg');" onclick="playEmbeddedVideo('video-roadster', 'PnMx5YYSjUI')">
+            <button class="play-overlay-btn" title="Воспроизвести видео">▶</button>
+            <div class="poster-label">▶ Смотреть видео геймплея</div>
+          </div>
+        </div>
+        <div class="video-actions">
+          <span style="font-size: 12px; color: var(--text-dim);">Кликните на обложку для запуска плеера</span>
+          <a class="neu-btn" href="https://youtu.be/PnMx5YYSjUI" target="_blank" style="font-size: 11.5px; padding: 4px 10px;">
+            Открыть на YouTube ↗
+          </a>
+        </div>
+      </div>
+      <div>
+        <div class="flagship-header">
+          <h3>Roadster-X</h3>
+          <span class="neu-tag tag-emerald">Three.js / Rapier3D</span>
+        </div>
+        <div class="flagship-meta">3D аркадная гонка с инвертированной гравитацией и реактивным полетом · WebGL / GamePush</div>
+        <ul class="flagship-list">
+          <li><strong>Физика присоса и сопла:</strong> активный фан-прижим к стенам и потолку + 10 маневровых сопел сжатого газа для зависания над пропастью и перелета разрывов трассы на 400+ км/ч.</li>
+          <li><strong>Экономическая модель и риск/награда:</strong> 2-уровневая мета (монеты + звезды доступа); комбо-множители от ×1.0 до ×6.0 за рисковые маневры («на волосок» от трафика, таран под щитом).</li>
+          <li><strong>Баланс прокачки и пейсинг:</strong> 7 веток улучшений по 5 уровней с экспоненциальной кривой стоимости (полная прокачка — 8 000 монет) под доход 600–1600 за заезд.</li>
+          <li><strong>Левел-дизайн:</strong> 6 спроектированных трасс с нарастающей геометрической сложностью (прямые → мосты → стены → мертвые петли → штопоры → зоны невесомости).</li>
+        </ul>
+      </div>
+    </div>
 
-        playBtn.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.play();
-                audioIcon.setAttribute('data-lucide', 'pause');
-            } else {
-                audio.pause();
-                audioIcon.setAttribute('data-lucide', 'play');
-            }
-            lucide.createIcons();
-        });
+    <!-- 3. 3D Avatar Stand Showcase Card (D.Va) -->
+    <div class="neu-card stand-showcase-box">
+      <div class="stand-topbar">
+        <div class="stand-title">
+          <h3>Стенд 3D-аватара & Real-Time LipSync (Tech Art Tool)</h3>
+          <div class="subtitle">Интерактивный веб-стенд настройки скелетной мимики персонажа без блендшейпов (D.Va / 80 костей лица)</div>
+        </div>
+        <a class="neu-btn" href="https://youtu.be/Ce0TY0aCtVA" target="_blank" style="border-top-color: rgba(255, 159, 67, 0.4);">
+          ▶ Смотреть видео стенда на YouTube ↗
+        </a>
+      </div>
 
-        audio.addEventListener('timeupdate', () => {
-            const pct = (audio.currentTime / audio.duration) * 100;
-            progress.style.width = pct + '%';
-        });
+      <div class="stand-grid-layout">
+        <!-- Video for 3D Stand -->
+        <div>
+          <div class="video-container" id="video-stand">
+            <div class="video-poster" style="background-image: url('assets/stand_bones.jpg');" onclick="playEmbeddedVideo('video-stand', 'Ce0TY0aCtVA')">
+              <button class="play-overlay-btn" title="Воспроизвести видео стенда">▶</button>
+              <div class="poster-label">▶ Запустить видео стенда</div>
+            </div>
+          </div>
+          <div style="font-size: 12px; color: var(--text-dim); margin-top: 6px;">
+            Демонстрация работы со стендом: калибровка артикуляции, липсинка и эмоций на чипе ESP32-S3 и в WebGL
+          </div>
+        </div>
 
-        progressCont.addEventListener('click', (e) => {
-            const rect = progressCont.getBoundingClientRect();
-            const pos = (e.clientX - rect.left) / rect.width;
-            audio.currentTime = pos * audio.duration;
-        });
+        <!-- 3 Feature Columns -->
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div class="neu-well stand-feat-col">
+            <strong>Скелетная мимика (без блендшейпов)</strong>
+            52 формы Apple ARKit в реальном времени конвертируются в 80 костей лица DAZ G8F (D.Va). Оптимизировано под микроконтроллер ESP32-S3 и чистый WebGL.
+          </div>
+          <div class="neu-well stand-feat-col">
+            <strong>Ускорение тестов и полировки</strong>
+            Стенд упрощает донастройку висем речи, ускоряет цикл правок, позволяет проводить тесты артикуляции и калибровать 16 эмоций под естественный Game Feel.
+          </div>
+          <div class="neu-well stand-feat-col">
+            <strong>Инструментарий разработчика</strong>
+            Web Speech TTS синтез, захват микрофона ПК с расчетом громкости (RMS), авто-моргание, саккады взгляда и экспорт запечённых анимационных клипов.
+          </div>
+        </div>
+      </div>
 
-        volume.addEventListener('input', (e) => {
-            audio.volume = e.target.value;
-        });
+      <!-- 3 Visual Zoomable Previews -->
+      <div class="stand-gallery">
+        <div class="stand-img-card" onclick="openLightbox('assets/stand_bones.jpg', '80 костей лица & ARKit лучи (D.Va)')">
+          <img src="assets/stand_bones.jpg" alt="80 Face Bones Rig & Tracking Rays">
+          <div class="stand-img-label">🔍 80 костей лица & ARKit лучи</div>
+        </div>
+        <div class="stand-img-card" onclick="openLightbox('assets/stand_side.jpg', 'Артикуляция & Реалтайм-липсинк (Профиль)')">
+          <img src="assets/stand_side.jpg" alt="Phonemes & Tongue Articulation">
+          <div class="stand-img-label">🔍 Артикуляция & Реалтайм-липсинк</div>
+        </div>
+        <div class="stand-img-card" onclick="openLightbox('assets/stand_emotion.jpg', 'Матрица 16 эмоций & TTS синтез')">
+          <img src="assets/stand_emotion.jpg" alt="16 Emotions Matrix & Speech TTS">
+          <div class="stand-img-label">🔍 Матрица 16 эмоций & TTS синтез</div>
+        </div>
+      </div>
+    </div>
 
-        /* ===================== TRANSLATIONS ===================== */
-        const T = {
-            ru: {
-                subtitle: 'Vibe Coder / AI Systems Builder', location: 'Remote · China / Europe',
-                skillstitle: 'Skills & Tech', skill1: 'ИИ Оркестрация', skill2: 'LLM / RAG',
-                skill3: 'Нодовые Системы', skill4: 'Unreal Engine', skill5: 'FinTech', skill6: 'Автоматизация',
-                statsproducts: 'Продуктов запущено', statsapi: 'API интегрировано', statsspatial: 'Spatial Engineer', statsvibe: 'Vibe Level',
-                abouttitle: 'ОБО МНЕ',
-                about1: 'AI Systems Builder / Avatar & Real-Time AI Developer',
-                about2: 'Разрабатываю AI-системы, AI-ботов и интерактивных цифровых персонажей. Специализируюсь на создании real-time avatar pipelines, motion capture workflows, управлении телом и лицевой анимацией персонажей, а также на интеграции аватаров с AI-логикой, базами данных и server-side системами.',
-                exptitle: 'ОПЫТ РАБОТЫ', exprole1: 'Независимый разработчик / AI Systems Architect', expdate1: 'Янв 2026 — Сейчас',
-                expavatar1: 'Интеграция аватаров с ИИ-логикой, базами знаний (RAG) и server-side пайплайнами для создания "говорящих" персонажей.',
-                expavatar2: 'Настройка Motion capture систем full-body tracking и Facial capture (blendshapes) для стриминга анимации в реальном времени.',
-                expavatar3: 'Создание production-ready систем в Unreal Engine для интерактивных персонажей и AI-ассистентов с мультимодальным вводом.',
-                expdesc1: 'Мультиагентный оркестратор, связывающий CLI, API и локальные модели с отдельными визуальными нодами с механикой спавна в реальном времени для генерации кода.',
-                expdesc2title: 'Dialogue Auto-responder',
-                expdesc2: 'Система с долгосрочной памятью о пользователе (БД), симулирующая человеческий ввод текста в реальном времени. Стек: Скрипты, Логика, SQLite, Firebase Hosting, VPS-сервер, Windows App.',
-                expdesc3: 'FinTech-калькулятор маршрутизации, агрегирующий данные о комиссиях из 50+ глобальных систем в реальном времени. Стек: Скрипты, Таблицы, Логика, DeepResearch, Frontend, Backend.',
-                expdesc4title: 'RAG-бот (Психотерапевт)',
-                expdesc4: 'Специализированная система, векторизовавшая 30+ ключевых профессиональных книг для контекстно-точных рассуждений ИИ.',
-                expdesc5: 'Полномасштабный Android-маркетплейс с интеграцией платежных шлюзов и сложной backend-логикой (Frontend, Backend, Дизайн, Swipe UX).',
-                expdate2: '2025 — Сейчас',
-                expdesc6: 'Проектирую 3D-визуальную социальную платформу нового поколения для фундаментального изменения способов общения, творчества и обмена ценностями в сообществах.',
-                exprole3: 'Spatial Data Engineer / 3D Developer', expdate3: 'Янв 2022 — Март 2025',
-                expdesc7: 'Разработка в Unreal Engine для сред с full-body трекингом в реальном времени.',
-                expdesc8: 'Настройка с нуля до живой реал-тайм трансляции: ретаргетинг, блупринты, создание сцен и освещения.',
-                exprole4: 'Audio Engines / DSP Development',
-                expdesc9: 'Разработал сверхсложную MIDI-архитектуру и движок генерации полиритмов, способный обрабатывать мелодические паттерны, превосходящие возможности человека.',
-                expdesc10: 'Создал высокопроизводительные браузерные генераторы аудиосигналов и веб-анализаторы спектра: Spectrum Analyser, 3D Audio Analyser.',
-                expdesc11: 'Прошел путь от реверс-инжиниринга к реализации собственных уникальных идей.',
-                projectstitle: 'ПРОЕКТЫ',
-                projtitle1: 'AI Agent Orchestrator', projdesc1: 'Визуальный интерфейс для управления группой автономных ИИ-агентов в реальном времени.',
-                projtitle2: 'Spectrum Analyser', projdesc2: 'Визуализация частот в реальном времени.',
-                projtitle3: 'MIDI Generator', projdesc3: 'Генератор музыкальных паттернов со сложной логикой вычислений.',
-                projtitle4: '3D Audio Analyser', projdesc4: 'Трехмерная визуализация звука и спектральных данных в веб-браузере.',
-                projtitle5: '3D Motion Capture', projdesc5: 'Захват движений всего тела на базе Unreal Engine для виртуальных миров.',
-                projtitle6: 'FinTech App / Router', projdesc6: 'Агрегатор платежных путей и калькулятор сложных комиссионных маршрутов.',
-                audiotitle: 'АУДИО РЕЗЮМЕ'
-            },
-            en: {
-                subtitle: 'Vibe Coder / AI Systems Builder', location: 'Remote · China / Europe',
-                skillstitle: 'Skills & Tech', skill1: 'AI Orchestration', skill2: 'LLM / RAG',
-                skill3: 'Node Systems', skill4: 'Unreal Engine', skill5: 'FinTech', skill6: 'Automation',
-                skill7: '3D Avatars', skill8: 'Motion Capture', skill9: 'Real-time AI',
-                statsproducts: 'Products Launched', statsapi: 'API Integrated', statsspatial: 'Spatial Engineer', statsvibe: 'Vibe Level',
-                abouttitle: 'ABOUT ME',
-                about1: 'AI Systems Builder / Avatar & Real-Time AI Developer',
-                about2: 'I build visual orchestrators for multi-agent systems that let people observe AI creation and behavior in real time. Over the past year I have built more than 10 complex products. My stack combines CLI, API, and local models into autonomous AI systems.',
-                exptitle: 'WORK EXPERIENCE', exprole1: 'Independent Developer / AI Systems Architect', expdate1: 'Jan 2026 — Present',
-                expavatar1: 'Integrating avatars with AI logic, knowledge bases (RAG), and server-side pipelines to create talking digital characters.',
-                expavatar2: 'Setting up full-body motion capture and facial capture (iPhone/blendshapes) for real-time animation streaming.',
-                expavatar3: 'Developing production-ready Unreal Engine environments for interactive AI characters and assistants.',
-                expdesc1: 'Multi-agent orchestrator connecting CLI, API, and local models with separate visual nodes.',
-                expdesc2title: 'Dialogue Auto-responder',
-                expdesc2: 'System with long-term user memory DB simulating human text input in real time.',
-                expdesc3: 'FinTech routing calculator aggregating commission data from 50+ systems.',
-                expdesc4title: 'RAG-bot Psychotherapist',
-                expdesc4: 'Specialized system vectorized across 30+ key professional books for AI reasoning.',
-                expdesc5: 'Full-scale Android marketplace with payment gateway integration.',
-                expdesc6: 'Designing a next-generation 3D visual social platform.',
-                expdesc7: 'Development in Unreal Engine for real-time environments.',
-                expdesc8: 'Setup from scratch to live real-time broadcast.',
-                expdesc9: 'Built an ultra-complex MIDI architecture and polyrhythm generation engine.',
-                expdesc10: 'Created high-performance browser-based audio analyzers.',
-                expdesc11: 'Progressed from reverse engineering to original architectural ideas.',
-                projectstitle: 'PROJECTS',
-                projtitle1: 'AI Agent Orchestrator', projdesc1: 'Visual interface for managing a group of autonomous AI agents in real time.',
-                projtitle2: 'Spectrum Analyser', projdesc2: 'Real-time frequency visualization.',
-                projtitle3: 'MIDI Generator', projdesc3: 'MIDI pattern generator with complex logic and computations.',
-                projtitle4: '3D Audio Analyser', projdesc4: 'Three-dimensional audio and spectral data visualization in the web browser.',
-                projtitle5: '3D Motion Capture', projdesc5: 'Full-body motion capture system based on Unreal Engine for virtual worlds.',
-                projtitle6: 'FinTech App / Router', projdesc6: 'Payment routing aggregator and complex fee structure calculator.',
-                audiotitle: 'AUDIO RESUME'
-            },
-            zh: {
-                subtitle: 'Vibe Coder / AI系统架构师', location: '远程 · 中国 / 欧洲',
-                skillstitle: '技能与技术', skill1: 'AI编排', skill2: '大模型/RAG',
-                skill3: '节点系统', skill4: '虚幻引擎', skill5: '金融科技', skill6: '自动化',
-                statsproducts: '已发布产品', statsapi: 'API集成', statsspatial: '空间工程师', statsvibe: 'Vibe等级',
-                abouttitle: '关于我',
-                about1: '我构建多智能体系统的可视化编排器...',
-                about2: '过去一年，我开发了超过10个复杂产品...',
-                exptitle: '工作经历', exprole1: '独立开发者 / AI系统架构师', expdate1: '2026年1月 — 至今',
-                expdesc1: '多智能体编排器，将CLI、API和本地模型与独立可视节点连接...',
-                expdesc2title: '对话自动回复器',
-                expdesc2: '具有长期用户记忆数据库的系统，实时模拟人类文本输入。',
-                expdesc3: '金融科技路由计算器，实时聚合50+个系统的佣金数据。',
-                expdesc4title: 'RAG机器人（心理治疗师）',
-                expdesc4: '对30+本专业书籍进行向量化的专业系统。',
-                expdesc5: '具有支付网关集成的全规模Android市场。',
-                expdesc6: '正在设计下一代3D可视化社交平台。',
-                expdesc7: '在虚幻引擎中开发实时全身追踪环境。',
-                expdesc8: '从零到实时直播的完整配置。',
-                expdesc9: '构建了超复杂的MIDI架构和多节奏生成引擎。',
-                expdesc10: '创建了高性能的浏览器端音频频谱分析仪。',
-                expdesc11: '从逆向工程到实现自己独特想法。',
-                projectstitle: '项目',
-                projtitle1: 'AI代理编排器', projdesc1: '用于实时管理一组自主AI代理的可视化界面。',
-                projtitle2: '频谱分析仪', projdesc2: '实时频率可视化。',
-                projtitle3: 'MIDI生成器', projdesc3: '具有复杂逻辑和计算的MIDI模式生成器。',
-                projtitle4: '3D音频分析仪', projdesc4: '浏览器中的三维音频和频谱数据可视化。',
-                projtitle5: '3D动作捕捉', projdesc5: '基于虚幻引擎的虚拟世界全身动作捕捉系统。',
-                projtitle6: '金融科技路由', projdesc6: '支付路由聚合器—和复杂费用结构计算器。',
-                audiotitle: '音频简历'
-            }
-        };
+    <!-- ================= HARDWARE & MOCAP SECTION ================= -->
+    <div class="sec-title">
+      <span class="sec-title-dot"></span>
+      <span>Mocap & Аппаратные прототипы</span>
+      <span class="sec-title-line"></span>
+    </div>
+    <div class="hardware-row">
+      <!-- Mocap Complex -->
+      <div class="neu-card hardware-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <h3 style="font-family: 'Outfit'; font-size: 18px; font-weight: 800; color: var(--text-white);">🎬 Motion Capture Комплекс</h3>
+          <span class="neu-tag tag-emerald">Собственное железо</span>
+        </div>
+        <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 8px;">
+          <strong>Оборудование:</strong> Костюм <b>Rokoko Smartsuit Pro</b> (full-body трекинг) + перчатки <b>Smartgloves</b> (захват пальцев и хвата) + <b>Apple ARKit</b> (52 блендшейпа мимики).
+        </p>
+        <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.5;">
+          <strong>Задачи & Ретаргетинг:</strong> Локомоушен, комбат, танцы, кат-сцены; клининг foot slide, экспорт на UE Control Rig, MetaHuman, Blender, Godot.
+        </p>
+      </div>
 
-        function switchLanguage(lang) {
-            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-            const btn = document.getElementById('btn-' + lang);
-            if (btn) btn.classList.add('active');
-            const data = T[lang] || T.ru;
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const k = el.getAttribute('data-i18n');
-                if (data[k] !== undefined) el.textContent = data[k];
-            });
-            document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
-            localStorage.setItem('preferredLang', lang);
-            SkillMatrix.redraw();
+      <!-- WalkMan AI Agent with Real Wrist Device Photo -->
+      <div class="neu-card hardware-card" style="border-top-color: rgba(255, 159, 67, 0.4);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 6px;">
+          <h3 style="font-family: 'Outfit'; font-size: 18px; font-weight: 800; color: var(--text-white);">🤖 WalkMan AI Agent (Wireless)</h3>
+          <span class="neu-tag tag-amber">Hardware Prototype</span>
+        </div>
+        <div class="walkman-box">
+          <div class="walkman-photo-col">
+            <div class="walkman-img-wrap" onclick="openLightbox('assets/walkman_wrist.jpg', 'Наручное устройство WalkMan AI Agent на руке')" title="Кликните для увеличения фото">
+              <img src="assets/walkman_wrist.jpg" alt="WalkMan AI Agent on Wrist">
+            </div>
+            <a class="neu-btn" href="https://youtube.com/shorts/3N1hfSrIK0s?feature=share" target="_blank" style="padding: 5px 8px; font-size: 12px; justify-content: center;">
+              <span style="color: var(--accent-coral);">▶</span> Shorts видео
+            </a>
+          </div>
+          <div>
+            <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 8px;">
+              <strong>Устройство на руке с 3D-аватаром:</strong> физический носимый компаньон с цветным IPS-дисплеем. Говорящий естественным голосом, распознающий речь пользователя в реальном времени.
+            </p>
+            <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 10px;">
+              <strong>70 костей лица + Инструменты MCP:</strong> скелетная мимика и реалтайм-липсинк на чипе ESP32-S3. Способен автономно вызывать инструменты по протоколу <strong>Model Context Protocol (MCP)</strong>.
+            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
+              <span style="font-size: 12.5px; color: var(--text-dim);">Android APK + локальный сервер</span>
+              <span style="font-size: 12.5px; color: var(--accent-amber); font-weight: 700;">⭐ Ищу инвестора / команду</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 3D WORKFLOW SAMPLES ================= -->
+    <div class="sec-title">
+      <span class="sec-title-dot"></span>
+      <span>3D Production & Workflow Samples</span>
+      <span class="sec-title-line"></span>
+    </div>
+    <div class="neu-card gallery-box">
+      <div class="gallery-head">
+        <span>Реальные примеры пайплайна: моделирование, риггинг, лицевая анимация и шейдеры</span>
+        <small>Кликните по любому кадру для увеличения</small>
+      </div>
+      <div class="gallery-strip">
+        <div class="gallery-item" onclick="openLightbox('assets/wf_1.jpg', 'Blender / Моделирование мехов')">
+          <img src="assets/wf_1.jpg" alt="Blender Mech Modeling">
+          <div class="gallery-label">Blender / Моделирование мехов</div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox('assets/wf_2.jpg', 'Blender / Техника & Low-Poly')">
+          <img src="assets/wf_2.jpg" alt="Vehicle Low-Poly Modeling">
+          <div class="gallery-label">Blender / Техника & Low-Poly</div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox('assets/wf_3.jpg', 'Лицевые блендшейпы / Мимика')">
+          <img src="assets/wf_3.jpg" alt="Face Rig & Blendshapes">
+          <div class="gallery-label">Лицевые блендшейпы / Мимика</div>
+        </div>
+        <div class="gallery-item" onclick="openLightbox('assets/wf_4.jpg', 'Архитектура сцен & Иерархия')">
+          <img src="assets/wf_4.jpg" alt="Scene Architecture & Hierarchy">
+          <div class="gallery-label">Архитектура сцен & Иерархия</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= PROJECTS CONTINUED (EXPANDED 2x2) ================= -->
+    <div class="sec-title">
+      <span class="sec-title-dot"></span>
+      <span>Опыт и проекты (Продолжение)</span>
+      <span class="sec-title-line"></span>
+    </div>
+    <div class="grid-2x2">
+      <!-- PILORAMA -->
+      <div class="neu-card proj-card">
+        <h4>PILORAMA</h4>
+        <span class="subtitle">2.5D физический экшен-слэшер · Matter.js / Canvas</span>
+        <ul>
+          <li><strong>Деконструкция кликера:</strong> превратил монотонный процесс в пространственную дилемму («что рассечь первым, порядок имеет следствие»); физика инерционной цепи.</li>
+          <li><strong>Физическое давление мира:</strong> замена полоски HP на механику надвигающейся стены из разрушаемых блоков и растущей свалки обломков.</li>
+          <li><strong>Мусор как ресурс & FEVER:</strong> обломки формируют защитные конструкции; режим FEVER на 8 с отключает гравитацию и запускает цепную детонацию.</li>
+        </ul>
+      </div>
+
+      <!-- RTS Generals -->
+      <div class="neu-card proj-card">
+        <h4>RTS Generals</h4>
+        <span class="subtitle">3D стратегия в реальном времени · Godot 4 / C# / GDScript</span>
+        <ul>
+          <li><strong>Роевой строй авиации:</strong> формализация 3D-сетки до 27 ведомых юнитов с автоматическим расчетом высоты над рельефом и динамическим лидером строя.</li>
+          <li><strong>Синхронизация FSM:</strong> устранил конфликт между стейт-машиной команд движения и полетными состояниями (Takeoff / Flying / Landing / Hovering).</li>
+          <li><strong>Комбат и навигация:</strong> ТТХ бронетехники, скорость башен, A* по путевым точкам + 2D Grid / NavMesh для обхода динамических препятствий.</li>
+        </ul>
+      </div>
+
+      <!-- Life Sim Online -->
+      <div class="neu-card proj-card">
+        <h4>Life Sim Online</h4>
+        <span class="subtitle">Мультиплеерный симулятор города · React Three Fiber / Node.js</span>
+        <ul>
+          <li><strong>Симуляция жителей:</strong> расписание дня, шкалы потребностей (сон, еда, отдых, работа), роутинг по точкам интереса (POI: кровати, станки, плиты).</li>
+          <li><strong>Бесшовный переход «город ↔ интерьер»:</strong> изометрический срез угла стен для наблюдения за интерьером без выгрузки сцены.</li>
+          <li><strong>LOD-симуляция:</strong> для помещений без реального наблюдателя ресурсоемкий поиск путей отключается, экономя такты процессора сервера.</li>
+        </ul>
+      </div>
+
+      <!-- Heat Rush -->
+      <div class="neu-card proj-card">
+        <h4>Heat Rush (HolyDots)</h4>
+        <span class="subtitle">Мобильная spatial-головоломка · React / Vite / Supabase</span>
+        <ul>
+          <li><strong>Двухзонная сетка 12×24:</strong> тактическая зона подготовки (смена цветов без сгорания) + авто-зона с восхождением и матчами на 2× скорости.</li>
+          <li><strong>Механика «нагрева»:</strong> серия быстрых тапов нагревает куб до красного джокера (wildcard), превращая размеренный пазл в реактивный экшен.</li>
+          <li><strong>Мета и монетизация:</strong> календарь наград, лидерборды, магазин скинов и rewarded-видео для продолжения забега.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ================= TECH STACK ================= -->
+    <div class="sec-title">
+      <span class="sec-title-dot"></span>
+      <span>Инструментарий и технический стек</span>
+      <span class="sec-title-line"></span>
+    </div>
+    <div class="stack-3col">
+      <div class="neu-well stack-cell">
+        <h5>Геймдизайн & Баланс</h5>
+        <p>System Design, Economy Balancing, Level Design, Combat Design, GDD, Technical Writing, Flowcharts, Wireframing, Excel / Sheets.</p>
+      </div>
+      <div class="neu-well stack-cell">
+        <h5>Движки & Рендер</h5>
+        <p>Godot 4, Three.js, React Three Fiber, Unreal Engine 5 (Blueprints, Control Rig, MetaHuman, Live Link), WebGL / WebGL2.</p>
+      </div>
+      <div class="neu-well stack-cell">
+        <h5>Физика & Логика</h5>
+        <p>Rapier3D (WASM), Matter.js, Cannon-es, A* Pathfinding, NavMesh, 2D Grid, FSM (стейт-машины), InstancedMesh.</p>
+      </div>
+      <div class="neu-well stack-cell">
+        <h5>3D & Пайплайн ассетов</h5>
+        <p>Blender (моделирование, low-poly, конформные UV, IK-риггинг, экспорт в Godot/Three.js/UE), Mixamo.</p>
+      </div>
+      <div class="neu-well stack-cell">
+        <h5>Аудио & Фидбек</h5>
+        <p>Web Audio API, DAW, синтез SFX, процедурный звук, синхронизация аудиального отклика на игровые события.</p>
+      </div>
+      <div class="neu-well stack-cell">
+        <h5>Инфраструктура & ИИ</h5>
+        <p>Model Context Protocol (MCP), Git, GamePush SDK, Node.js, WebSockets, Firebase, SQLite, Fastify, Docker, веб-порталы.</p>
+      </div>
+    </div>
+
+    <!-- ================= ADDITIONAL BACKGROUND ================= -->
+    <div class="sec-title">
+      <span class="sec-title-dot"></span>
+      <span>Дополнительный бэкграунд</span>
+      <span class="sec-title-line"></span>
+    </div>
+    <div class="neu-card bg-dual">
+      <div>
+        <h5>Поведенческая психология (3-летняя программа)</h5>
+        <p>Глубокое понимание психологии игрока, когнитивной нагрузки, внутренних мотиваторов (дофаминовые петли, баланс фрустрации и вызова, кривые вовлечения). Позволяет проектировать сценарии, понятные интуитивно.</p>
+      </div>
+      <div>
+        <h5>Саунд-дизайн и DSP (Обработка сигналов)</h5>
+        <p>Понимание физики звука и психоакустики. Умение синхронизировать визуальный и аудиальный импакт (вес удара, рев турбин, ощущение скорости) для достижения максимального эффекта погружения (Game Feel).</p>
+      </div>
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+    <div class="footer-bar">
+      <div>
+        © 2026 Юрий Андриенко · Системный и технический геймдизайнер
+      </div>
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <a class="neu-btn" href="RESUME_GAMEDEV_YURI_ANDRIENKO.pdf" download style="color: var(--accent-amber);">
+          📥 Скачать PDF
+        </a>
+        <a class="neu-btn" href="https://t.me/Cyberhumans" target="_blank">
+          Связаться в Telegram
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Lightbox Modal -->
+  <div class="lightbox-modal" id="lightboxModal" onclick="closeLightbox()">
+    <img id="lightboxImg" src="" alt="Zoomed preview">
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Embedded Video Loader (Plays video inline on demand)
+    function playEmbeddedVideo(containerId, videoId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = `
+        <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" 
+          title="Video Player" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen>
+        </iframe>
+      `;
+    }
+
+    // Audio Player Toggle
+    const audio = document.getElementById('resumeAudio');
+    const audioBtn = document.getElementById('audioToggleBtn');
+    const audioStatus = document.getElementById('audioStatusText');
+
+    if (audio && audioBtn) {
+      audioBtn.addEventListener('click', () => {
+        if (audio.paused) {
+          audio.play().then(() => {
+            audioBtn.textContent = '⏸';
+            audioStatus.textContent = 'Воспроизведение аудио-резюме...';
+          }).catch(err => {
+            console.error('Audio playback error:', err);
+            audioStatus.textContent = 'Нажмите еще раз для запуска аудио';
+          });
+        } else {
+          audio.pause();
+          audioBtn.textContent = '▶';
+          audioStatus.textContent = 'Воспроизведение приостановлено';
         }
-        window.addEventListener('load', () => switchLanguage(localStorage.getItem('preferredLang') || 'ru'));
+      });
 
-        /* ===================== SKILL MATRIX ===================== */
-        const SkillMatrix = (() => {
-            const canvas = document.getElementById('skills-canvas');
-            const grid = canvas.closest('.skills-container');
-            const tags = Array.from(document.querySelectorAll('.skill-tag[data-skill]'));
-            const bySkill = Object.fromEntries(tags.map(t => [t.dataset.skill, t]));
-            const LINKS = { orch: ['llm', 'nodes', 'auto', 'fintech'], llm: ['orch', 'nodes', 'auto'], nodes: ['orch', 'llm', 'auto', 'fintech'], unreal: ['motion'], fintech: ['nodes', 'orch'], auto: ['orch', 'llm', 'nodes', 'unreal', 'fintech'], reverse: ['llm', 'nodes'], motion: ['unreal', 'auto'] };
+      audio.addEventListener('ended', () => {
+        audioBtn.textContent = '▶';
+        audioStatus.textContent = 'Аудио-резюме завершено';
+      });
+    }
 
-            let activeId = null; let leaveTimer = null;
-            function syncSize() { const r = grid.getBoundingClientRect(); canvas.setAttribute('width', r.width); canvas.setAttribute('height', r.height); canvas.setAttribute('viewBox', `0 0 ${r.width} ${r.height}`); }
-            function local(el) { const e = el.getBoundingClientRect(), c = grid.getBoundingClientRect(); return { cx: e.left - c.left + e.width / 2, cy: e.top - c.top + e.height / 2, l: e.left - c.left, r: e.right - c.left }; }
+    // Lightbox modal logic
+    const modal = document.getElementById('lightboxModal');
+    const modalImg = document.getElementById('lightboxImg');
+    const modalCaption = document.getElementById('lightboxCaption');
 
-            function drawTrace(x1, y1, x2, y2, gutterX) {
-                const R = 12;
-                if (Math.abs(y1 - y2) < 5) return `M ${x1} ${y1} L ${x2} ${y2}`;
-                const dx1 = Math.sign(gutterX - x1) || 1;
-                const dy = Math.sign(y2 - y1) || 1;
-                const dx2 = Math.sign(x2 - gutterX) || 1;
-                const r1 = Math.min(R, Math.abs(gutterX - x1), Math.abs(y2 - y1) / 2);
-                const r2 = Math.min(R, Math.abs(x2 - gutterX), Math.abs(y2 - y1) / 2);
-                return `M ${x1} ${y1} L ${gutterX - dx1 * r1} ${y1} L ${gutterX} ${y1 + dy * r1} L ${gutterX} ${y2 - dy * r2} L ${gutterX + dx2 * r2} ${y2} L ${x2} ${y2}`;
-            }
+    function openLightbox(src, caption) {
+      modalImg.src = src;
+      modalCaption.textContent = caption || '';
+      modal.classList.add('active');
+    }
 
-            function buildPath(fromEl, toEl, laneIdx) {
-                const a = local(fromEl), b = local(toEl), W = grid.getBoundingClientRect().width;
-                const sameRow = Math.abs(a.cy - b.cy) < 20;
-                const diffCol = Math.abs(a.cx - b.cx) > W / 4;
+    function closeLightbox() {
+      modal.classList.remove('active');
+    }
 
-                if (sameRow && diffCol) {
-                    return a.cx < b.cx ? `M ${a.r} ${a.cy} L ${b.l} ${b.cy}` : `M ${a.l} ${a.cy} L ${b.r} ${b.cy}`;
-                }
-                if (diffCol) {
-                    const gutterX = W / 2 + (laneIdx % 3 - 1) * 6;
-                    return drawTrace(a.cx < W / 2 ? a.r : a.l, a.cy, b.cx < W / 2 ? b.r : b.l, b.cy, gutterX);
-                }
-                const isLeft = a.cx < W / 2;
-                const gutterX = isLeft ? -12 - laneIdx * 8 : W + 12 + laneIdx * 8;
-                return drawTrace(isLeft ? a.l : a.r, a.cy, isLeft ? b.l : b.r, b.cy, gutterX);
-            }
-
-            function draw(sid) {
-                if (!bySkill[sid]) return; activeId = sid; syncSize(); canvas.innerHTML = '';
-                tags.forEach(t => t.classList.remove('trace-active', 'trace-target'));
-                const origin = bySkill[sid]; origin.classList.add('trace-active');
-                (LINKS[sid] || []).forEach((tid, idx) => {
-                    const target = bySkill[tid]; if (!target) return; target.classList.add('trace-target');
-                    const d = buildPath(origin, target, idx);
-                    const glow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                    glow.setAttribute('d', d); glow.setAttribute('class', 'conn-glow');
-                    const core = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                    core.setAttribute('d', d); core.setAttribute('class', 'conn-core');
-                    const dash = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                    dash.setAttribute('d', d); dash.setAttribute('class', 'conn-dash');
-                    const photon = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                    photon.setAttribute('r', '3.5'); photon.setAttribute('class', 'conn-photon');
-                    canvas.append(glow, core, dash, photon);
-                    const len = core.getTotalLength(); const dur = 1000;
-                    [core, glow].forEach(p => { p.style.strokeDasharray = len; p.style.strokeDashoffset = len; p.animate([{ strokeDashoffset: len }, { strokeDashoffset: 0 }], { duration: dur, easing: 'ease-out', fill: 'forwards' }).onfinish = () => dash.classList.add('alive'); });
-                    photon.style.offsetPath = `path("${d}")`; photon.animate([{ offsetDistance: '0%' }, { offsetDistance: '100%' }], { duration: dur, easing: 'linear' });
-                });
-            }
-
-            tags.forEach(tag => {
-                tag.addEventListener('mouseenter', () => { draw(tag.dataset.skill); });
-                tag.addEventListener('mouseleave', () => { canvas.innerHTML = ''; tags.forEach(t => t.classList.remove('trace-active', 'trace-target')); });
-            });
-            return { redraw() { if (activeId) draw(activeId); } };
-        })();
-
-        /* ===================== TRACE MATRIX (exp -> skill) ===================== */
-        const TraceMatrix = (() => {
-            const overlay = document.getElementById('trace-overlay');
-            const layer = document.getElementById('trace-layer');
-            const EXP_LINKS = { 'lazy-ide': ['orch', 'nodes'], 'dialogue': ['auto', 'llm'], 'paynode': ['fintech', 'nodes'], 'rag-bot': ['llm', 'auto'], 'market-app': ['fintech', 'auto'], 'social-3d': ['auto', 'unreal'], 'unreal-env': ['unreal', 'motion'], 'motion-pipeline': ['motion', 'unreal'], 'dsp-midi': ['nodes', 'auto'], 'dsp-web': ['nodes', 'auto'], 'reverse-eng': ['reverse', 'llm'] };
-            const skillEls = Object.fromEntries(Array.from(document.querySelectorAll('.skill-tag[data-skill]')).map(el => [el.dataset.skill, el]));
-
-            function syncSize() { overlay.setAttribute('width', window.innerWidth); overlay.setAttribute('height', window.innerHeight); overlay.setAttribute('viewBox', `0 0 ${window.innerWidth} ${window.innerHeight}`); }
-            function drawTrace(x1, y1, x2, y2, gutterX) {
-                const R = 18;
-                if (Math.abs(y1 - y2) < 5) return `M ${x1} ${y1} L ${x2} ${y2}`;
-                const dx1 = Math.sign(gutterX - x1) || 1;
-                const dy = Math.sign(y2 - y1) || 1;
-                const dx2 = Math.sign(x2 - gutterX) || 1;
-                const r1 = Math.min(R, Math.abs(gutterX - x1), Math.abs(y2 - y1) / 2);
-                const r2 = Math.min(R, Math.abs(x2 - gutterX), Math.abs(y2 - y1) / 2);
-                return `M ${x1} ${y1} L ${gutterX - dx1 * r1} ${y1} L ${gutterX} ${y1 + dy * r1} L ${gutterX} ${y2 - dy * r2} L ${gutterX + dx2 * r2} ${y2} L ${x2} ${y2}`;
-            }
-
-            function buildPath(src, dst, idx) {
-                const s = src.getBoundingClientRect(), d = dst.getBoundingClientRect();
-                const sY = s.top + s.height / 2, dY = d.top + d.height / 2;
-                const sX = s.left - 8, dX = d.right + 8;
-                const gX = (sX + dX) / 2 + (idx - 1) * 12;
-                return drawTrace(sX, sY, dX, dY, gX);
-            }
-
-            function draw(sid) {
-                syncSize(); overlay.innerHTML = ''; const src = document.querySelector(`[data-trace-from="${sid}"]`); if (!src) return;
-                (EXP_LINKS[sid] || []).forEach((tid, idx) => {
-                    const dst = skillEls[tid]; if (!dst) return;
-                    const d = buildPath(src, dst, idx);
-                    const glow = document.createElementNS('http://www.w3.org/2000/svg', 'path'); glow.setAttribute('d', d); glow.setAttribute('class', 'tconn-glow');
-                    const core = document.createElementNS('http://www.w3.org/2000/svg', 'path'); core.setAttribute('d', d); core.setAttribute('class', 'tconn-core');
-                    const dash = document.createElementNS('http://www.w3.org/2000/svg', 'path'); dash.setAttribute('d', d); dash.setAttribute('class', 'tconn-dash');
-                    const photon = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); photon.setAttribute('r', '4'); photon.setAttribute('class', 'tconn-photon');
-                    overlay.append(glow, core, dash, photon);
-                    const len = core.getTotalLength(); core.style.strokeDasharray = len; core.style.strokeDashoffset = len; core.animate([{ strokeDashoffset: len }, { strokeDashoffset: 0 }], { duration: 1200, fill: 'forwards' }).onfinish = () => dash.classList.add('alive');
-                    photon.style.offsetPath = `path("${d}")`; photon.animate([{ offsetDistance: '0%' }, { offsetDistance: '100%' }], { duration: 1200, easing: 'linear' });
-                });
-            }
-
-            document.querySelectorAll('[data-trace-from]').forEach(el => {
-                el.addEventListener('mouseenter', () => draw(el.dataset.traceFrom));
-                el.addEventListener('mouseleave', () => overlay.innerHTML = '');
-            });
-
-            const io = new IntersectionObserver((entries) => {
-                const top = entries.find(e => e.isIntersecting);
-                if (top) draw(top.target.dataset.traceFrom);
-            }, { threshold: 0.6 });
-            document.querySelectorAll('[data-trace-from]').forEach(t => io.observe(t));
-            return { draw };
-        })();
-
-        /* ===================== LIKE BUTTON ===================== */
-        (() => {
-            const btn = document.getElementById('like-button'), countEl = document.getElementById('like-count'), f = document.getElementById('like-fountain');
-            let count = parseInt(localStorage.getItem('resume_likes_v3') || '128');
-            countEl.textContent = count;
-            btn.addEventListener('click', () => {
-                count++; localStorage.setItem('resume_likes_v3', count); countEl.textContent = count;
-                const h = document.createElement('span'); h.className = 'fly-heart'; h.style.left = Math.random() * 80 + '%'; h.style.setProperty('--drift', (Math.random() - 0.5) * 40 + 'px'); h.style.setProperty('--rot2', (Math.random() - 0.5) * 30 + 'deg');
-                f.appendChild(h); setTimeout(() => h.remove(), 1800);
-            });
-        })();
-    </script>
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+  </script>
 </body>
-
 </html>
