@@ -886,9 +886,372 @@
         height: 220px;
       }
     }
+
+    /* ================= HARDWARE DATA-BUS RAIL & PCB TRACES ================= */
+    .pcb-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+      overflow: visible;
+    }
+
+    .pcb-trace {
+      fill: none;
+      stroke: rgba(255, 159, 67, 0.28);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.35s ease, filter 0.35s ease, stroke-width 0.35s ease;
+    }
+
+    .pcb-trace.active-pulse {
+      stroke: rgba(255, 185, 90, 0.95);
+      stroke-width: 2.2;
+      filter: drop-shadow(0 0 6px rgba(255, 159, 67, 0.85));
+    }
+
+    .pcb-trace.hover-active {
+      stroke: #ff9f43;
+      stroke-width: 2.4;
+      filter: drop-shadow(0 0 8px rgba(255, 159, 67, 0.95));
+      stroke-dasharray: 7 3.5;
+      animation: pcbMarchingAnts 0.6s linear infinite;
+    }
+
+    @keyframes pcbMarchingAnts {
+      from { stroke-dashoffset: 10.5; }
+      to { stroke-dashoffset: 0; }
+    }
+
+    .pcb-trace.pcb-trace-settled {
+      stroke: rgba(255, 159, 67, 0.28);
+      stroke-width: 1.5;
+      filter: drop-shadow(0 0 2px rgba(255, 159, 67, 0.25));
+    }
+
+    .pcb-photon {
+      fill: #fffdf5;
+      stroke: #ff9f43;
+      stroke-width: 2;
+      filter: drop-shadow(0 0 8px #ff9f43) drop-shadow(0 0 16px rgba(255, 159, 67, 0.9));
+      pointer-events: none;
+    }
+
+    /* Interactive PCB Skill Nodes */
+    .pcb-node {
+      display: inline-block;
+      cursor: pointer;
+      padding: 1px 7px;
+      margin: 1px 2px;
+      border-radius: 5px;
+      background: rgba(255, 159, 67, 0.08);
+      border: 1px solid rgba(255, 159, 67, 0.28);
+      color: var(--accent-amber);
+      font-weight: 600;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+      position: relative;
+    }
+    .pcb-node:hover {
+      background: rgba(255, 159, 67, 0.22);
+      border-color: var(--accent-amber);
+      box-shadow: 0 0 12px rgba(255, 159, 67, 0.45);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    .pcb-node::after {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--accent-amber);
+      margin-left: 5px;
+      vertical-align: middle;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+    .pcb-node:hover::after {
+      opacity: 1;
+      box-shadow: 0 0 6px var(--accent-amber);
+    }
+
+    /* Target highlight on cards */
+    .neu-card.pcb-card-targeted,
+    .stand-showcase-box.pcb-card-targeted {
+      border-color: rgba(255, 159, 67, 0.8) !important;
+      box-shadow: 0 12px 36px rgba(255, 159, 67, 0.25), 0 0 25px rgba(255, 159, 67, 0.2) !important;
+      transform: translateY(-2px);
+    }
+
+    /* Terminal Diodes in Section Titles */
+    .sec-title-dot {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    .sec-title-dot.active-terminal {
+      background: #ffd166;
+      box-shadow: 0 0 10px #ff9f43, 0 0 20px rgba(255, 159, 67, 0.75);
+      transform: scale(1.25);
+    }
+    .sec-title-dot::after {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 159, 67, 0.4);
+      pointer-events: none;
+    }
+
+    /* Left Hardware Data-Bus Spine (Desktop Rail) */
+    .data-bus-rail {
+      position: fixed;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 90;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: linear-gradient(180deg, #1e232d 0%, #14171e 100%);
+      border-radius: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+      border-left: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.75);
+      border-right: 1px solid rgba(0, 0, 0, 0.5);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      padding: 10px 5px;
+      width: 52px;
+      user-select: none;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+
+    .bus-rail-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      width: 100%;
+    }
+    .bus-rail-status-led {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      box-shadow: 0 0 8px var(--accent-emerald);
+      animation: busLedPulse 2s infinite ease-in-out;
+    }
+    @keyframes busLedPulse {
+      0%, 100% { opacity: 0.7; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.1); }
+    }
+    .bus-rail-title {
+      font-family: 'SF Mono', 'Courier New', monospace;
+      font-size: 7.5px;
+      font-weight: 700;
+      color: var(--text-dim);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .bus-nodes {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin: 8px 0;
+      position: relative;
+    }
+
+    /* Vertical Copper Track behind buttons */
+    .bus-nodes::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      background: linear-gradient(180deg, rgba(255, 159, 67, 0.15), rgba(255, 159, 67, 0.45), rgba(255, 159, 67, 0.15));
+      z-index: 1;
+    }
+
+    .bus-node {
+      position: relative;
+      z-index: 2;
+      width: 40px;
+      height: 34px;
+      background: linear-gradient(155deg, #242934 0%, #171a21 100%);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-top-color: rgba(255, 255, 255, 0.14);
+      border-bottom-color: rgba(0, 0, 0, 0.6);
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+      padding: 2px;
+      color: var(--text-muted);
+    }
+    .bus-node:hover {
+      border-color: rgba(255, 159, 67, 0.45);
+      transform: scale(1.06);
+      color: var(--text-white);
+    }
+    .bus-node-led {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #4a341b;
+      transition: all 0.25s;
+      margin-bottom: 2px;
+    }
+    .bus-node-num {
+      font-family: 'SF Mono', 'Courier New', monospace;
+      font-size: 9.5px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    /* Active Bus Node */
+    .bus-node.active {
+      background: linear-gradient(155deg, #2e3544 0%, #1a1e27 100%);
+      border-color: rgba(255, 159, 67, 0.65);
+      box-shadow: 0 0 12px rgba(255, 159, 67, 0.25), inset 0 0 6px rgba(255, 159, 67, 0.15);
+      color: var(--accent-amber);
+    }
+    .bus-node.active .bus-node-led {
+      background: var(--accent-amber);
+      box-shadow: 0 0 8px var(--accent-amber), 0 0 14px rgba(255, 159, 67, 0.6);
+    }
+
+    /* Tooltip on Hover */
+    .bus-node::after {
+      content: attr(data-label);
+      position: absolute;
+      left: calc(100% + 10px);
+      top: 50%;
+      transform: translateY(-50%) translateX(-6px);
+      background: rgba(20, 23, 29, 0.95);
+      color: var(--text-white);
+      padding: 5px 11px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      border: 1px solid rgba(255, 159, 67, 0.35);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.3px;
+      z-index: 100;
+    }
+    .bus-node:hover::after {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+    }
+
+    .bus-rail-footer {
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      width: 100%;
+      text-align: center;
+    }
+    .bus-rail-sub {
+      font-family: 'SF Mono', 'Courier New', monospace;
+      font-size: 7px;
+      font-weight: 700;
+      color: var(--accent-emerald);
+      letter-spacing: 0.5px;
+    }
+
+    /* Hide Data-Bus on screens < 1240px */
+    @media (max-width: 1239px) {
+      .data-bus-rail {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 <body>
+
+  <!-- Full-Document SVG Circuit Canvas for Dynamic PCB Traces -->
+  <svg id="pcb-canvas" class="pcb-canvas" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- Glow filter for active photon pulse -->
+      <filter id="pcb-glow" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="3.5" result="blur" />
+        <feMerge>
+          <feMergeNode in="blur" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+    </defs>
+    <!-- Traces generated on scroll & hover -->
+    <g id="pcb-scroll-traces"></g>
+    <g id="pcb-hover-traces"></g>
+    <g id="pcb-photons"></g>
+  </svg>
+
+  <!-- Fixed Hardware Data-Bus Spine (Left Desktop Rail) -->
+  <nav class="data-bus-rail" id="dataBusRail" aria-label="PCB Hardware Data Bus">
+    <div class="bus-rail-header">
+      <div class="bus-rail-status-led" title="Hardware Data-Bus Online"></div>
+      <span class="bus-rail-title">BUS 100MHz</span>
+    </div>
+    <div class="bus-nodes">
+      <button class="bus-node active" data-target="sec-hero" data-label="01 · ПРОФИЛЬ & МАТРИЦА">
+        <span class="bus-node-led"></span>
+        <span class="bus-node-num">01</span>
+      </button>
+      <button class="bus-node" data-target="sec-comp" data-label="02 · КЛЮЧЕВЫЕ КОМПЕТЕНЦИИ">
+        <span class="bus-node-led"></span>
+        <span class="bus-node-num">02</span>
+      </button>
+      <button class="bus-node" data-target="sec-runboyz" data-label="03 · RUNBOYZ (СТОЛБЫ)">
+        <span class="bus-node-led"></span>
+        <span class="bus-node-num">03</span>
+      </button>
+      <button class="bus-node" data-target="sec-roadster" data-label="04 · ROADSTER-X (ФИЗИКА)">
+        <span class="bus-node-led"></span>
+        <span class="bus-node-num">04</span>
+      </button>
+      <button class="bus-node" data-target="sec-stand" data-label="05 · 3D СТЕНД (80 КОСТЕЙ)">
+        <span class="bus-node-led"></span>
+        <span class="bus-node-num">05</span>
+      </button>
+      <button class="bus-node" data-target="sec-hardware" data-label="06 · MOCAP & ИИ-ОРКЕСТРАТОР">
+        <span class="bus-node-led"></span>
+        <span class="bus-node-num">06</span>
+      </button>
+      <button class="bus-node" data-target="sec-gallery" data-label="07 · 3D ASSETS & MECH">
+        <span class="bus-node-led"></span>
+        <span class="bus-node-num">07</span>
+      </button>
+      <button class="bus-node" data-target="sec-projects" data-label="08 · RTS / PILORAMA / HEAT">
+        <span class="bus-node-led"></span>
+        <span class="bus-node-num">08</span>
+      </button>
+      <button class="bus-node" data-target="sec-stack" data-label="09 · ТЕХНИЧЕСКИЙ СТЕК">
+        <span class="bus-node-led"></span>
+        <span class="bus-node-num">09</span>
+      </button>
+    </div>
+    <div class="bus-rail-footer">
+      <span class="bus-rail-sub">SYS OK</span>
+    </div>
+  </nav>
 
   <!-- Sticky Top Quick Navigation & PDF Download -->
   <div class="top-action-bar">
@@ -912,7 +1275,7 @@
   <div class="container">
 
     <!-- ================= HERO TOP ================= -->
-    <div class="hero-top">
+    <div class="hero-top" id="sec-hero">
       <div class="hero-left">
         <div class="header">
           <h1>YUKI LEE</h1>
@@ -935,7 +1298,7 @@
           <audio id="resumeAudio" src="assets/RESUME.MP3" preload="metadata"></audio>
         </div>
 
-        <!-- HR Snapshot Matrix (Recessed Socket) -->
+        <!-- HR Snapshot Matrix (Recessed Socket with Interactive PCB Connections) -->
         <div class="neu-well hr-matrix">
           <div class="matrix-item">
             <span class="matrix-label">Жанры</span>
@@ -943,15 +1306,28 @@
           </div>
           <div class="matrix-item">
             <span class="matrix-label">Движки & Рендер</span>
-            <span class="matrix-val">Godot 4, Three.js / WebGL, R3F, Unreal Engine 5</span>
+            <span class="matrix-val">
+              <span class="pcb-node" data-pcb-target="proj-rts" title="Связь с Godot 4 (RTS Generals)">Godot 4</span>, 
+              <span class="pcb-node" data-pcb-target="sec-runboyz" title="Связь с Three.js (RunboyZ)">Three.js / WebGL</span>, 
+              <span class="pcb-node" data-pcb-target="proj-lifesim" title="Связь с R3F (Life Sim)">R3F</span>, 
+              <span class="pcb-node" data-pcb-target="card-orchestrator" title="Связь с Unreal 5.8 & MCP">Unreal Engine 5</span>
+            </span>
           </div>
           <div class="matrix-item">
             <span class="matrix-label">Физика & Системы</span>
-            <span class="matrix-val">Rapier3D, Matter.js, NavMesh, A*, FSM, Экономика</span>
+            <span class="matrix-val">
+              <span class="pcb-node" data-pcb-target="sec-roadster" title="Связь с Rapier3D (Roadster-X)">Rapier3D</span>, 
+              <span class="pcb-node" data-pcb-target="proj-pilorama" title="Связь с Matter.js (PILORAMA)">Matter.js</span>, 
+              <span class="pcb-node" data-pcb-target="sec-runboyz" title="Связь с A* (RunboyZ)">NavMesh / A*</span>, 
+              <span class="pcb-node" data-pcb-target="card-orchestrator" title="Связь с Командой Агентов">MCP Агенты</span>
+            </span>
           </div>
           <div class="matrix-item">
             <span class="matrix-label">Mocap & Риггинг</span>
-            <span class="matrix-val">Rokoko Smartsuit + Smartgloves, 80 костей Face Rig</span>
+            <span class="matrix-val">
+              <span class="pcb-node" data-pcb-target="card-mocap" title="Связь с Rokoko Smartsuit">Rokoko Smartsuit</span>, 
+              <span class="pcb-node" data-pcb-target="sec-stand" title="Связь со Стендом 80 костей лица (D.Va)">80 костей Face Rig</span>
+            </span>
           </div>
         </div>
 
@@ -968,8 +1344,8 @@
     </div>
 
     <!-- ================= COMPETENCIES ================= -->
-    <div class="sec-title">
-      <span class="sec-title-dot"></span>
+    <div class="sec-title" id="sec-comp">
+      <span class="sec-title-dot" id="dot-comp"></span>
       <span>Ключевые компетенции</span>
       <span class="sec-title-line"></span>
     </div>
@@ -993,14 +1369,14 @@
     </div>
 
     <!-- ================= FLAGSHIP PROJECTS WITH VIDEO ================= -->
-    <div class="sec-title">
-      <span class="sec-title-dot"></span>
+    <div class="sec-title" id="sec-flagships">
+      <span class="sec-title-dot" id="dot-flagships"></span>
       <span>Флагманские проекты с видео-демонстрацией</span>
       <span class="sec-title-line"></span>
     </div>
 
     <!-- 1. RunboyZ -->
-    <div class="neu-card flagship-card">
+    <div class="neu-card flagship-card" id="sec-runboyz">
       <div>
         <div class="video-container" id="video-runboyz">
           <div class="video-poster" style="background-image: url('assets/runboyz.png');" onclick="playEmbeddedVideo('video-runboyz', 'jOGHQQgdn4g')">
@@ -1017,7 +1393,7 @@
       </div>
       <div>
         <div class="flagship-header">
-          <h3>RunboyZ («СТОЛБЫ» / Duel of Pillars)</h3>
+          <h3><span class="sec-title-dot" id="dot-runboyz" style="width:7px; height:7px; margin-right:6px;"></span>RunboyZ («СТОЛБЫ» / Duel of Pillars)</h3>
           <span class="neu-tag tag-emerald">Multiplayer WebGL</span>
         </div>
         <div class="flagship-meta">Соревновательный 3D экшен-раннер со строительством лабиринта · React 19 / Three.js / Node.js</div>
@@ -1031,7 +1407,7 @@
     </div>
 
     <!-- 2. Roadster-X -->
-    <div class="neu-card flagship-card">
+    <div class="neu-card flagship-card" id="sec-roadster">
       <div>
         <div class="video-container" id="video-roadster">
           <div class="video-poster" style="background-image: url('assets/roadster_x.jpg');" onclick="playEmbeddedVideo('video-roadster', 'PnMx5YYSjUI')">
@@ -1048,7 +1424,7 @@
       </div>
       <div>
         <div class="flagship-header">
-          <h3>Roadster-X</h3>
+          <h3><span class="sec-title-dot" id="dot-roadster" style="width:7px; height:7px; margin-right:6px;"></span>Roadster-X</h3>
           <span class="neu-tag tag-emerald">Three.js / Rapier3D</span>
         </div>
         <div class="flagship-meta">3D аркадная гонка с инвертированной гравитацией и реактивным полетом · WebGL / GamePush</div>
@@ -1062,10 +1438,10 @@
     </div>
 
     <!-- 3. 3D Avatar Stand Showcase Card (D.Va) -->
-    <div class="neu-card stand-showcase-box">
+    <div class="neu-card stand-showcase-box" id="sec-stand">
       <div class="stand-topbar">
         <div class="stand-title">
-          <h3>Стенд 3D-аватара & Real-Time LipSync (Tech Art Tool)</h3>
+          <h3><span class="sec-title-dot" id="dot-stand" style="width:7px; height:7px; margin-right:6px;"></span>Стенд 3D-аватара & Real-Time LipSync (Tech Art Tool)</h3>
           <div class="subtitle">Интерактивный веб-стенд настройки скелетной мимики персонажа без блендшейпов (D.Va / 80 костей лица)</div>
         </div>
         <a class="neu-btn" href="https://youtu.be/Ce0TY0aCtVA" target="_blank" style="border-top-color: rgba(255, 159, 67, 0.4);">
@@ -1122,14 +1498,14 @@
     </div>
 
     <!-- ================= HARDWARE & MOCAP SECTION ================= -->
-    <div class="sec-title">
-      <span class="sec-title-dot"></span>
-      <span>Mocap & Аппаратные прототипы</span>
+    <div class="sec-title" id="sec-hardware">
+      <span class="sec-title-dot" id="dot-hardware"></span>
+      <span>Mocap, Аппаратные прототипы & MCP-Оркестрация</span>
       <span class="sec-title-line"></span>
     </div>
     <div class="hardware-row">
       <!-- Mocap Complex -->
-      <div class="neu-card hardware-card">
+      <div class="neu-card hardware-card" id="card-mocap">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
           <h3 style="font-family: 'Outfit'; font-size: 18px; font-weight: 800; color: var(--text-white);">🎬 Motion Capture Комплекс</h3>
           <span class="neu-tag tag-emerald">Собственное железо</span>
@@ -1143,7 +1519,7 @@
       </div>
 
       <!-- WalkMan AI Agent with Real Wrist Device Photo -->
-      <div class="neu-card hardware-card" style="border-top-color: rgba(255, 159, 67, 0.4);">
+      <div class="neu-card hardware-card" id="sec-walkman" style="border-top-color: rgba(255, 159, 67, 0.4);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 6px;">
           <h3 style="font-family: 'Outfit'; font-size: 18px; font-weight: 800; color: var(--text-white);">🤖 WalkMan AI Agent (Wireless)</h3>
           <span class="neu-tag tag-amber">Hardware Prototype</span>
@@ -1162,7 +1538,7 @@
               <strong>Устройство на руке с 3D-аватаром:</strong> физический носимый компаньон с цветным IPS-дисплеем. Говорящий естественным голосом, распознающий речь пользователя в реальном времени.
             </p>
             <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 10px;">
-              <strong>70 костей лица + Инструменты MCP:</strong> скелетная мимика и реалтайм-липсинк на чипе ESP32-S3. Способен автономно вызывать инструменты по протоколу <strong>Model Context Protocol (MCP)</strong>.
+              <strong>70 костей лица + Инструменты MCP:</strong> скелетная мимика и реалтайм-липсинк на чипе ESP32-S3. Способен автономно вызывать инструменты по протоколу <span class="pcb-node" data-pcb-target="card-orchestrator" title="Связь с MCP Пайплайнами">Model Context Protocol (MCP)</span>.
             </p>
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
               <span style="font-size: 12.5px; color: var(--text-dim);">Android APK + локальный сервер</span>
@@ -1173,9 +1549,46 @@
       </div>
     </div>
 
+    <!-- ================= MCP-ОРКЕСТРАЦИЯ И МУЛЬТИАГЕНТНЫЕ ПАЙПЛАЙНЫ ================= -->
+    <div class="neu-card mcp-orchestrator-card" id="card-orchestrator" style="padding: 22px 24px; margin-bottom: 24px; border-top: 1px solid rgba(255, 159, 67, 0.45); border-left: 1px solid rgba(255, 159, 67, 0.25);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="sec-title-dot" id="dot-orchestrator" style="width: 8px; height: 8px;"></span>
+          <div>
+            <h3 style="font-family: 'Outfit'; font-size: 18px; font-weight: 800; color: var(--text-white); letter-spacing: -0.2px;">
+              MCP-Оркестрация & Мультиагентные Командные Системы (UE 5.8 / Blender 3D / Dev Swarm)
+            </h3>
+            <div style="font-size: 12.5px; color: var(--text-dim); margin-top: 2px;">
+              Глубокая интеграция Model Context Protocol (MCP) в игровые движки и 3D-пайплайны · Автономное управление командой агентов
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          <span class="neu-tag tag-amber">200+ MCP Tools</span>
+          <span class="neu-tag tag-emerald">Agent MECH Combines</span>
+          <span class="neu-tag tag-cyan">Self-Healing Dispatcher</span>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;">
+        <div class="neu-well" style="padding: 14px 16px; font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+          <strong style="color: var(--accent-amber); display: block; margin-bottom: 6px; font-size: 13.5px;">🎮 Unreal Engine 5.8 + MCP</strong>
+          Прямое подключение MCP-интерфейса в движок Unreal Engine 5.8. Объединил свыше 200 инструментов из разнородных MCP-наборов. Агент автономно решает задачи: настройка Animation Blueprints, сборка и верификация нодовой логики, отладка устаревших проблем и фикс накопившихся багов ассетов.
+        </div>
+        <div class="neu-well" style="padding: 14px 16px; font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+          <strong style="color: var(--accent-amber); display: block; margin-bottom: 6px; font-size: 13.5px;">🤖 Blender 3D: MECH-комбайн</strong>
+          Обучение 3D-агента через MCP работе со связкой Blender-аддонов: не штучные статичные меши, а модульный комбайн генерации MECH-роботов (руки, ноги, корпус на едином скелете) и персонажей с нуля. Агент понимает каждый инструмент аддонов и применяет натренированные скиллы под задачу.
+        </div>
+        <div class="neu-well" style="padding: 14px 16px; font-size: 13px; color: var(--text-muted); line-height: 1.5;">
+          <strong style="color: var(--accent-amber); display: block; margin-bottom: 6px; font-size: 13.5px;">👥 Оркестратор Команды Агентов</strong>
+          Архитектура управления группой кодинг-агентов на базе MCP: мониторинг прогресса воркеров в реальном времени, автоматический перехват сбоев, возврат упавшей задачи в оркестратор и интеллектуальная перемаршрутизация другому свободному агенту с обновленным контекстом.
+        </div>
+      </div>
+    </div>
+
     <!-- ================= 3D WORKFLOW SAMPLES ================= -->
-    <div class="sec-title">
-      <span class="sec-title-dot"></span>
+    <div class="sec-title" id="sec-gallery">
+      <span class="sec-title-dot" id="dot-gallery"></span>
       <span>3D Production & Workflow Samples</span>
       <span class="sec-title-line"></span>
     </div>
@@ -1205,14 +1618,14 @@
     </div>
 
     <!-- ================= PROJECTS CONTINUED (EXPANDED 2x2) ================= -->
-    <div class="sec-title">
-      <span class="sec-title-dot"></span>
+    <div class="sec-title" id="sec-projects">
+      <span class="sec-title-dot" id="dot-projects"></span>
       <span>Опыт и проекты (Продолжение)</span>
       <span class="sec-title-line"></span>
     </div>
     <div class="grid-2x2">
       <!-- PILORAMA -->
-      <div class="neu-card proj-card">
+      <div class="neu-card proj-card" id="proj-pilorama">
         <h4>PILORAMA</h4>
         <span class="subtitle">2.5D физический экшен-слэшер · Matter.js / Canvas</span>
         <ul>
@@ -1223,7 +1636,7 @@
       </div>
 
       <!-- RTS Generals -->
-      <div class="neu-card proj-card">
+      <div class="neu-card proj-card" id="proj-rts">
         <h4>RTS Generals</h4>
         <span class="subtitle">3D стратегия в реальном времени · Godot 4 / C# / GDScript</span>
         <ul>
@@ -1234,7 +1647,7 @@
       </div>
 
       <!-- Life Sim Online -->
-      <div class="neu-card proj-card">
+      <div class="neu-card proj-card" id="proj-lifesim">
         <h4>Life Sim Online</h4>
         <span class="subtitle">Мультиплеерный симулятор города · React Three Fiber / Node.js</span>
         <ul>
@@ -1245,7 +1658,7 @@
       </div>
 
       <!-- Heat Rush -->
-      <div class="neu-card proj-card">
+      <div class="neu-card proj-card" id="proj-heatrush">
         <h4>Heat Rush (HolyDots)</h4>
         <span class="subtitle">Мобильная spatial-головоломка · React / Vite / Supabase</span>
         <ul>
@@ -1257,8 +1670,8 @@
     </div>
 
     <!-- ================= TECH STACK ================= -->
-    <div class="sec-title">
-      <span class="sec-title-dot"></span>
+    <div class="sec-title" id="sec-stack">
+      <span class="sec-title-dot" id="dot-stack"></span>
       <span>Инструментарий и технический стек</span>
       <span class="sec-title-line"></span>
     </div>
@@ -1269,15 +1682,26 @@
       </div>
       <div class="neu-well stack-cell">
         <h5>Движки & Рендер</h5>
-        <p>Godot 4, Three.js, React Three Fiber, Unreal Engine 5 (Blueprints, Control Rig, MetaHuman, Live Link), WebGL / WebGL2.</p>
+        <p>
+          <span class="pcb-node" data-pcb-target="proj-rts">Godot 4</span>, 
+          <span class="pcb-node" data-pcb-target="sec-runboyz">Three.js</span>, 
+          <span class="pcb-node" data-pcb-target="proj-lifesim">React Three Fiber</span>, 
+          <span class="pcb-node" data-pcb-target="card-orchestrator">Unreal Engine 5</span> (Blueprints, Control Rig, MetaHuman, Live Link), WebGL / WebGL2.
+        </p>
       </div>
       <div class="neu-well stack-cell">
         <h5>Физика & Логика</h5>
-        <p>Rapier3D (WASM), Matter.js, Cannon-es, A* Pathfinding, NavMesh, 2D Grid, FSM (стейт-машины), InstancedMesh.</p>
+        <p>
+          <span class="pcb-node" data-pcb-target="sec-roadster">Rapier3D (WASM)</span>, 
+          <span class="pcb-node" data-pcb-target="proj-pilorama">Matter.js</span>, 
+          Cannon-es, A* Pathfinding, NavMesh, 2D Grid, FSM (стейт-машины), InstancedMesh.
+        </p>
       </div>
       <div class="neu-well stack-cell">
         <h5>3D & Пайплайн ассетов</h5>
-        <p>Blender (моделирование, low-poly, конформные UV, IK-риггинг, экспорт в Godot/Three.js/UE), Mixamo.</p>
+        <p>
+          <span class="pcb-node" data-pcb-target="sec-gallery">Blender</span> (моделирование, low-poly, конформные UV, IK-риггинг, экспорт в Godot/Three.js/UE), Mixamo.
+        </p>
       </div>
       <div class="neu-well stack-cell">
         <h5>Аудио & Фидбек</h5>
@@ -1285,13 +1709,15 @@
       </div>
       <div class="neu-well stack-cell">
         <h5>Инфраструктура & ИИ</h5>
-        <p>Model Context Protocol (MCP), Git, GamePush SDK, Node.js, WebSockets, Firebase, SQLite, Fastify, Docker, веб-порталы.</p>
+        <p>
+          <span class="pcb-node" data-pcb-target="card-orchestrator">Model Context Protocol (MCP)</span>, Git, GamePush SDK, Node.js, WebSockets, Firebase, SQLite, Fastify, Docker, веб-порталы.
+        </p>
       </div>
     </div>
 
     <!-- ================= ADDITIONAL BACKGROUND ================= -->
-    <div class="sec-title">
-      <span class="sec-title-dot"></span>
+    <div class="sec-title" id="sec-background">
+      <span class="sec-title-dot" id="dot-background"></span>
       <span>Дополнительный бэкграунд</span>
       <span class="sec-title-line"></span>
     </div>
@@ -1390,6 +1816,279 @@
     // Close on Escape key
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeLightbox();
+    });
+
+    // ============================================================
+    // DYNAMIC PCB HARDWARE DATA-BUS & CIRCUIT TRACE SYSTEM
+    // ============================================================
+    const pcbCanvas = document.getElementById('pcb-canvas');
+    const scrollTracesGroup = document.getElementById('pcb-scroll-traces');
+    const hoverTracesGroup = document.getElementById('pcb-hover-traces');
+    const photonsGroup = document.getElementById('pcb-photons');
+
+    // Section Registry for Data Bus
+    const busSections = [
+      { id: 'sec-hero', dotId: null, num: '01' },
+      { id: 'sec-comp', dotId: 'dot-comp', num: '02' },
+      { id: 'sec-runboyz', dotId: 'dot-runboyz', num: '03' },
+      { id: 'sec-roadster', dotId: 'dot-roadster', num: '04' },
+      { id: 'sec-stand', dotId: 'dot-stand', num: '05' },
+      { id: 'sec-hardware', dotId: 'dot-hardware', num: '06' },
+      { id: 'sec-gallery', dotId: 'dot-gallery', num: '07' },
+      { id: 'sec-projects', dotId: 'dot-projects', num: '08' },
+      { id: 'sec-stack', dotId: 'dot-stack', num: '09' }
+    ];
+
+    // Helper: Document coordinates for an element
+    function getDocBounds(el) {
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      const sx = window.scrollX || window.pageXOffset || 0;
+      const sy = window.scrollY || window.pageYOffset || 0;
+      return {
+        x: r.left + r.width / 2 + sx,
+        y: r.top + r.height / 2 + sy,
+        left: r.left + sx,
+        right: r.right + sx,
+        top: r.top + sy,
+        bottom: r.bottom + sy,
+        width: r.width,
+        height: r.height
+      };
+    }
+
+    // Helper: Orthogonal PCB Path (90° bends with rounded joints)
+    function buildOrthogonalPcbPath(x1, y1, x2, y2, gutterX) {
+      const gx = gutterX !== undefined ? gutterX : (Math.min(x1, x2) - 30);
+      return `M ${x1.toFixed(1)} ${y1.toFixed(1)} L ${gx.toFixed(1)} ${y1.toFixed(1)} L ${gx.toFixed(1)} ${y2.toFixed(1)} L ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+    }
+
+    // 1. Data-Bus Rail Click Handlers
+    document.querySelectorAll('.bus-node').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = btn.getAttribute('data-target');
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // 2. Scroll IntersectionObserver for Bus & Section Traces
+    const visitedSections = new Set();
+    let currentActiveSectionId = null;
+
+    function activateSectionPcb(sectionId) {
+      if (currentActiveSectionId === sectionId) return;
+      currentActiveSectionId = sectionId;
+
+      // Update bus rail buttons
+      document.querySelectorAll('.bus-node').forEach(btn => {
+        if (btn.getAttribute('data-target') === sectionId) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      // Highlight section terminal diode
+      const secConf = busSections.find(s => s.id === sectionId);
+      if (!secConf) return;
+
+      const dotEl = secConf.dotId ? document.getElementById(secConf.dotId) : null;
+      if (dotEl) dotEl.classList.add('active-terminal');
+
+      // Draw PCB lead-in trace if not drawn yet (on screens >= 1200px)
+      if (window.innerWidth >= 1200 && !visitedSections.has(sectionId) && dotEl) {
+        visitedSections.add(sectionId);
+        drawBusToSectionTrace(secConf, dotEl);
+      }
+    }
+
+    function drawBusToSectionTrace(secConf, dotEl) {
+      if (!pcbCanvas || !scrollTracesGroup) return;
+      const dotBounds = getDocBounds(dotEl);
+      if (!dotBounds) return;
+
+      // Left spine line starts near rail margin (approx x = 68)
+      const x0 = 68;
+      const y0 = dotBounds.y - 12;
+      const x1 = 100;
+      const y1 = dotBounds.y - 12;
+      const x2 = 114;
+      const y2 = dotBounds.y;
+      const xTarget = dotBounds.left - 4;
+
+      // 45-degree dogleg trace
+      const d = `M ${x0} ${y0.toFixed(1)} L ${x1} ${y1.toFixed(1)} L ${x2} ${y2.toFixed(1)} L ${xTarget.toFixed(1)} ${y2.toFixed(1)}`;
+
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', d);
+      path.setAttribute('class', 'pcb-trace active-pulse');
+      scrollTracesGroup.appendChild(path);
+
+      const len = path.getTotalLength() || 200;
+      path.style.strokeDasharray = `${len} ${len}`;
+      path.style.strokeDashoffset = len;
+
+      path.animate([
+        { strokeDashoffset: len },
+        { strokeDashoffset: 0 }
+      ], {
+        duration: 500,
+        easing: 'ease-out',
+        fill: 'forwards'
+      }).onfinish = () => {
+        path.classList.remove('active-pulse');
+        path.classList.add('pcb-trace-settled');
+      };
+
+      // Photon pulse along the trace
+      const photon = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      photon.setAttribute('r', '3.5');
+      photon.setAttribute('class', 'pcb-photon');
+      photon.style.offsetPath = `path("${d}")`;
+      photonsGroup.appendChild(photon);
+
+      photon.animate([
+        { offsetDistance: '0%', opacity: 1 },
+        { offsetDistance: '100%', opacity: 1 }
+      ], {
+        duration: 520,
+        easing: 'cubic-bezier(0.2, 0.8, 0.25, 1)',
+        fill: 'forwards'
+      }).onfinish = () => {
+        photon.remove();
+        dotEl.classList.add('active-terminal');
+      };
+    }
+
+    // Observe Sections
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          activateSectionPcb(entry.target.id);
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: '-15% 0px -45% 0px',
+      threshold: 0.1
+    });
+
+    busSections.forEach(sec => {
+      const el = document.getElementById(sec.id);
+      if (el) sectionObserver.observe(el);
+    });
+
+    // 3. Interactive Hover Cross-Linking (Skill Matrix & Project Interconnects)
+    let currentHoverPath = null;
+    let currentTargetedCard = null;
+
+    document.querySelectorAll('.pcb-node[data-pcb-target]').forEach(node => {
+      // Hover In
+      node.addEventListener('mouseenter', () => {
+        const targetId = node.getAttribute('data-pcb-target');
+        const targetEl = document.getElementById(targetId);
+        if (!targetEl || !hoverTracesGroup) return;
+
+        // Highlight target card
+        currentTargetedCard = targetEl;
+        targetEl.classList.add('pcb-card-targeted');
+
+        // Calculate positions
+        const startBounds = getDocBounds(node);
+        const endBounds = getDocBounds(targetEl);
+        if (!startBounds || !endBounds) return;
+
+        // Choose anchor points
+        const x1 = startBounds.right;
+        const y1 = startBounds.y;
+        const x2 = endBounds.left + 16;
+        const y2 = endBounds.top + 24;
+
+        // Gutter: route outside to the left or right
+        const containerEl = document.querySelector('.container');
+        const containerBounds = getDocBounds(containerEl);
+        const gx = containerBounds ? Math.max(15, containerBounds.left - 24) : (Math.min(x1, x2) - 25);
+
+        const d = buildOrthogonalPcbPath(x1, y1, x2, y2, gx);
+
+        // Remove old hover path if any
+        if (currentHoverPath) currentHoverPath.remove();
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', d);
+        path.setAttribute('class', 'pcb-trace hover-active');
+        hoverTracesGroup.appendChild(path);
+        currentHoverPath = path;
+
+        // Launch two fast photon pulses in succession
+        launchHoverPhoton(d, 0);
+        launchHoverPhoton(d, 160);
+      });
+
+      // Hover Out
+      node.addEventListener('mouseleave', () => {
+        if (currentHoverPath) {
+          currentHoverPath.remove();
+          currentHoverPath = null;
+        }
+        if (currentTargetedCard) {
+          currentTargetedCard.classList.remove('pcb-card-targeted');
+          currentTargetedCard = null;
+        }
+      });
+
+      // Click to smooth scroll directly to the connected project
+      node.addEventListener('click', (e) => {
+        const targetId = node.getAttribute('data-pcb-target');
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+          e.preventDefault();
+          targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+    });
+
+    function launchHoverPhoton(pathData, delayMs) {
+      setTimeout(() => {
+        if (!photonsGroup) return;
+        const photon = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        photon.setAttribute('r', '4');
+        photon.setAttribute('class', 'pcb-photon');
+        photon.style.offsetPath = `path("${pathData}")`;
+        photonsGroup.appendChild(photon);
+
+        photon.animate([
+          { offsetDistance: '0%', opacity: 1 },
+          { offsetDistance: '100%', opacity: 1 }
+        ], {
+          duration: 480,
+          easing: 'ease-out',
+          fill: 'forwards'
+        }).onfinish = () => {
+          photon.remove();
+        };
+      }, delayMs);
+    }
+
+    // Window Resize Handling
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (scrollTracesGroup) scrollTracesGroup.innerHTML = '';
+        visitedSections.clear();
+        if (currentActiveSectionId) {
+          const secConf = busSections.find(s => s.id === currentActiveSectionId);
+          const dotEl = secConf && secConf.dotId ? document.getElementById(secConf.dotId) : null;
+          if (secConf && dotEl && window.innerWidth >= 1200) {
+            drawBusToSectionTrace(secConf, dotEl);
+          }
+        }
+      }, 200);
     });
   </script>
 </body>
